@@ -223,7 +223,42 @@ the value twice / use checksummed IDs), but the cause is reattributed.
 | Temp-0 determinism | Semantically stable, lexically jittery |
 | INT4 clean echo | 20/20 — char-drop is retrieval-load, not quant |
 
+---
+
+# Part 4 — Mitigating the dead zone (Wave 3)
+
+Harness `bench_wave3.py`. A needle is buried ~1000 tokens before the question (dead
+zone, baseline ~0). Six placement strategies, 8 trials each, all copies carry the
+same code, sentence-form question.
+
+```
+strategy                       found    what it tells us
+baseline (1 copy, dead zone)    0/8     reproduces the dead zone
+dup adjacent ×2 (back-to-back)  0/8     local repetition does NOTHING
+dup adjacent ×3 (back-to-back)  0/8     even 3 stacked copies fail completely
+dup → recency (copy pre-question) 8/8   ✓ rescued
+dup → primacy (copy at top)     8/8     ✓ rescued
+primacy + recency (×3 spread)   8/8     ✓ rescued
+```
+
+**The finding:** duplicating content *within* the dead zone is useless — three
+back-to-back copies still scored 0/8. The dead zone is an **attention-coverage gap**
+(sliding-window), not a signal-strength problem, so repetition there can't help. The
+fix is to relocate **one** copy into a zone attention actually reaches — the recency
+window (last ~500 tokens) or the primacy slot (very top). Either gives 8/8.
+
+Verified: the 3 copies were genuinely placed back-to-back; misses are real
+substitutions (the model returns `87.3` — the needle line's *temperature* — or a
+garbled `AMBER-5817`→`BER-57`), confirming it partially attends to the region but
+cannot reliably read it.
+
+**Actionable rule:** if a critical fact must live in the middle of a long prompt,
+echo a copy of it into a header at the top **or** into the lines just before your
+question. Don't bother repeating it in place.
+
 ## Files
 - `bench_kv.py` / `results.json` / `raw.jsonl` — Part 1 (retrieval)
 - `bench_coherence.py` / `results_coherence.json` / `raw_coherence.jsonl` — Part 2 (coherence + shaping)
 - `bench_quirks.py` / `results_quirks.json` / `raw_quirks.jsonl` — Part 3 (quirks, Wave 1)
+- `bench_wave2.py` / `results_wave2.json` / `raw_wave2.jsonl` — Wave 2 (cliff, canvas, temp, JSON, honesty)
+- `bench_wave3.py` / `results_wave3.json` / `raw_wave3.jsonl` — Part 4 (dead-zone mitigation)

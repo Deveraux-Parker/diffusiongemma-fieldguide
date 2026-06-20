@@ -284,14 +284,35 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
   </div>
 </section>
 
-<!-- 5. CHEATSHEET -->
-<section id="cheat">
+<!-- 5. MITIGATION -->
+<section id="mitigation">
   <div class="sh"><span class="idx">05</span><div>
+    <span class="eyebrow">Beating the dead zone</span>
+    <h2>You can’t shout louder. You have to move.</h2></div></div>
+  <p class="sub">If a fact has to live in the middle of a long prompt, can you rescue it by repeating it?
+    We buried a fact in the dead zone and tried six ways to recover it.
+    Duplicating it <i>in place</i> — even three copies back-to-back — does nothing.
+    Putting a single copy in a <b>safe zone</b> fixes it completely.</p>
+
+  <div class="panel">
+    <div id="mitig" class="chartbox"></div>
+    <div class="callout"><b>Why:</b> the dead zone is a gap in what the model’s attention reaches, not a matter of emphasis.
+      Three stacked copies are still in the gap. One copy at the top, or just before your question, lands where the model is looking.</div>
+    <div class="callout warn" style="margin-top:14px"><b>The tactic:</b> when a critical fact sits mid-prompt, echo it into a header at the top
+      <i>or</i> into the line right before your question. Repeating it in place is wasted effort.</div>
+  </div>
+</section>
+
+<!-- 6. CHEATSHEET -->
+<section id="cheat">
+  <div class="sh"><span class="idx">06</span><div>
     <span class="eyebrow">Putting it to work</span>
-    <h2>Five rules that make it reliable.</h2></div></div>
+    <h2>Six rules that make it reliable.</h2></div></div>
   <div class="rules">
     <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
       <p>Put must-have facts in the <b>first half</b> of the prompt, or in the <b>last ~500 tokens</b> right before your question.</p></div></div>
+    <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
+      <p>Stuck with a mid-prompt fact? <b>Echo one copy</b> into a top header or just before the question — don’t repeat it in place.</p></div></div>
     <div class="rule dont"><span class="mk">✕</span><div><div class="h">Avoid</div>
       <p>Don’t bury a critical fact in the <b>late-middle</b> of a long prompt (~600–1500 tokens before the question).</p></div></div>
     <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
@@ -330,7 +351,13 @@ const DATA = {
   heat:{ depths:["0.0","0.1","0.25","0.5","0.75","0.9","1.0"],
          rows:[ {label:"26% full",v:[5,5,5,5,4,5,5]}, {label:"76% full",v:[5,5,5,5,0,0,5]} ] },
   temp:[ {t:"0.0",d:.654},{t:"0.5",d:.703},{t:"1.0",d:.620},{t:"1.5",d:.577},{t:"2.0",d:.684} ],
-  canvas:[ {n:128,ms:627},{n:224,ms:679},{n:256,ms:629},{n:288,ms:1200},{n:384,ms:1105},{n:512,ms:1293},{n:640,ms:1350} ]
+  canvas:[ {n:128,ms:627},{n:224,ms:679},{n:256,ms:629},{n:288,ms:1200},{n:384,ms:1105},{n:512,ms:1293},{n:640,ms:1350} ],
+  mitig:[ {k:"1 copy · dead zone",v:0,ok:false},
+          {k:"2 copies · back-to-back",v:0,ok:false},
+          {k:"3 copies · back-to-back",v:0,ok:false},
+          {k:"+ copy before question",v:8,ok:true},
+          {k:"+ copy at the top",v:8,ok:true},
+          {k:"top + before question",v:8,ok:true} ]
 };
 const C={cyan:"#3FE0CC",amber:"#F6A93B",crimson:"#FF5470",violet:"#8B7CF6",muted:"#8A92A8",grid:"rgba(255,255,255,.07)"};
 const cFor=h=> h>=5?C.cyan : h>=3?C.amber : h>=1?"#F67A4B" : C.crimson;
@@ -463,7 +490,33 @@ function fillBars(){document.querySelectorAll(".fill[data-w]").forEach(f=>{
   const w=f.dataset.w+"%"; if(reduce){f.style.width=w;return;}
   requestAnimationFrame(()=>{setTimeout(()=>f.style.width=w,120);});});}
 
-drawValley();drawCoh();drawHeat();drawTemp();drawCanvas();noiseField();fillBars();
+/* ---------- mitigation: horizontal bars (0..8) ---------- */
+function drawMitig(){
+  const root=$("#mitig");
+  const wrap=document.createElement("div");
+  wrap.style.cssText="display:flex;flex-direction:column;gap:13px;margin:4px 0 2px";
+  DATA.mitig.forEach((m,i)=>{
+    const row=document.createElement("div");
+    const top=document.createElement("div");
+    top.style.cssText="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px";
+    top.innerHTML=`<span class="mono" style="font-size:13.5px;color:${m.ok?'#ECEFF7':'#8A92A8'}">${m.k}</span>`+
+      `<span style="font-family:var(--disp);font-weight:600;font-size:14px;color:${m.ok?C.cyan:C.crimson}">${m.v}/8 found</span>`;
+    const track=document.createElement("div");
+    track.style.cssText="height:26px;background:#070A11;border:1px solid rgba(255,255,255,.10);border-radius:7px;overflow:hidden";
+    const fill=document.createElement("div");
+    fill.style.cssText=`height:100%;border-radius:6px;background:${m.ok?C.cyan:C.crimson};opacity:${m.ok?'.92':'.45'};width:0;transition:width 1s cubic-bezier(.2,.7,.2,1) ${i*90}ms`;
+    if(m.v===0){fill.style.minWidth="0";}
+    track.appendChild(fill);row.appendChild(top);row.appendChild(track);wrap.appendChild(row);
+    requestAnimationFrame(()=>setTimeout(()=>fill.style.width=(m.v/8*100||1.5)+"%",80));
+  });
+  root.appendChild(wrap);
+  const cap=document.createElement("div");
+  cap.style.cssText="font-family:IBM Plex Mono,monospace;font-size:11.5px;color:#5A6178;margin-top:14px;display:flex;gap:20px;flex-wrap:wrap";
+  cap.innerHTML='<span>↑ same fact buried ~1000 tokens before the question · 8 trials each</span>';
+  root.appendChild(cap);
+}
+
+drawValley();drawCoh();drawHeat();drawTemp();drawCanvas();drawMitig();noiseField();fillBars();
 </script>
 </body>
 </html>
