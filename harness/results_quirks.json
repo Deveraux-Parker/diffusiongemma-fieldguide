@@ -1,0 +1,57 @@
+{
+  "P1": [
+    {
+      "fill": 2000,
+      "hit": 4
+    },
+    {
+      "fill": 3000,
+      "hit": 5
+    },
+    {
+      "fill": 4000,
+      "hit": 2
+    },
+    {
+      "fill": 5000,
+      "hit": 5
+    },
+    {
+      "fill": 6000,
+      "hit": 0
+    },
+    {
+      "fill": 7000,
+      "hit": 5
+    }
+  ],
+  "P2": {
+    "front": {
+      "max": 4,
+      "first_cross": 2,
+      "count": 1
+    },
+    "buried": {
+      "max": 1,
+      "first_cross": 5,
+      "count": 0
+    }
+  },
+  "P3": {
+    "no_pointer": 0,
+    "pointer": 1
+  },
+  "P4": {
+    "unique": 5,
+    "sample": "The system maintains a consistent nominal status with temperature, pressure, and flow rates fluctuating within expected "
+  },
+  "P5": {
+    "plain": 0,
+    "min_tokens": 0
+  },
+  "P6": {
+    "exact": 20,
+    "n": 20,
+    "errs": []
+  }
+}

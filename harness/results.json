@@ -1,0 +1,158 @@
+{
+  "A": [
+    {
+      "fill": 500,
+      "prompt_tok": 577,
+      "kv_util": 0.072,
+      "hit_rate": 0.6,
+      "lat_ms": 168
+    },
+    {
+      "fill": 1000,
+      "prompt_tok": 1087,
+      "kv_util": 0.136,
+      "hit_rate": 0.6,
+      "lat_ms": 231
+    },
+    {
+      "fill": 2000,
+      "prompt_tok": 2094,
+      "kv_util": 0.262,
+      "hit_rate": 1.0,
+      "lat_ms": 339
+    },
+    {
+      "fill": 4000,
+      "prompt_tok": 4101,
+      "kv_util": 0.513,
+      "hit_rate": 1.0,
+      "lat_ms": 510
+    },
+    {
+      "fill": 6000,
+      "prompt_tok": 6110,
+      "kv_util": 0.764,
+      "hit_rate": 1.0,
+      "lat_ms": 706
+    },
+    {
+      "fill": 7500,
+      "prompt_tok": 7599,
+      "kv_util": 0.95,
+      "hit_rate": 1.0,
+      "lat_ms": 1130
+    }
+  ],
+  "B": [
+    {
+      "fill": 2000,
+      "kv_util": 0.263,
+      "depth": 0.0,
+      "hit_rate": 1.0
+    },
+    {
+      "fill": 2000,
+      "kv_util": 0.263,
+      "depth": 0.1,
+      "hit_rate": 1.0
+    },
+    {
+      "fill": 2000,
+      "kv_util": 0.262,
+      "depth": 0.25,
+      "hit_rate": 1.0
+    },
+    {
+      "fill": 2000,
+      "kv_util": 0.263,
+      "depth": 0.5,
+      "hit_rate": 1.0
+    },
+    {
+      "fill": 2000,
+      "kv_util": 0.263,
+      "depth": 0.75,
+      "hit_rate": 0.8
+    },
+    {
+      "fill": 2000,
+      "kv_util": 0.264,
+      "depth": 0.9,
+      "hit_rate": 1.0
+    },
+    {
+      "fill": 2000,
+      "kv_util": 0.261,
+      "depth": 1.0,
+      "hit_rate": 1.0
+    },
+    {
+      "fill": 6000,
+      "kv_util": 0.764,
+      "depth": 0.0,
+      "hit_rate": 1.0
+    },
+    {
+      "fill": 6000,
+      "kv_util": 0.761,
+      "depth": 0.1,
+      "hit_rate": 1.0
+    },
+    {
+      "fill": 6000,
+      "kv_util": 0.761,
+      "depth": 0.25,
+      "hit_rate": 1.0
+    },
+    {
+      "fill": 6000,
+      "kv_util": 0.762,
+      "depth": 0.5,
+      "hit_rate": 1.0
+    },
+    {
+      "fill": 6000,
+      "kv_util": 0.764,
+      "depth": 0.75,
+      "hit_rate": 0.0
+    },
+    {
+      "fill": 6000,
+      "kv_util": 0.764,
+      "depth": 0.9,
+      "hit_rate": 0.0
+    },
+    {
+      "fill": 6000,
+      "kv_util": 0.761,
+      "depth": 1.0,
+      "hit_rate": 1.0
+    }
+  ],
+  "C": [
+    {
+      "forced_tok": 128,
+      "comp_tok": 128,
+      "lat_ms": 704,
+      "uniq_8gram": 1.0
+    },
+    {
+      "forced_tok": 512,
+      "comp_tok": 512,
+      "lat_ms": 1127,
+      "uniq_8gram": 1.0
+    },
+    {
+      "forced_tok": 1024,
+      "comp_tok": 1024,
+      "lat_ms": 2098,
+      "uniq_8gram": 1.0
+    },
+    {
+      "forced_tok": 1500,
+      "comp_tok": 1500,
+      "lat_ms": 2264,
+      "uniq_8gram": 1.0
+    }
+  ]
+}

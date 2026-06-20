@@ -1,0 +1,124 @@
+{
+  "W1_cliff": [
+    {
+      "dist": 223,
+      "hit": 5
+    },
+    {
+      "dist": 418,
+      "hit": 5
+    },
+    {
+      "dist": 616,
+      "hit": 3
+    },
+    {
+      "dist": 816,
+      "hit": 1
+    },
+    {
+      "dist": 1012,
+      "hit": 0
+    },
+    {
+      "dist": 1210,
+      "hit": 0
+    },
+    {
+      "dist": 1525,
+      "hit": 0
+    },
+    {
+      "dist": 2038,
+      "hit": 5
+    },
+    {
+      "dist": 3030,
+      "hit": 5
+    },
+    {
+      "dist": 4015,
+      "hit": 5
+    }
+  ],
+  "W2_canvas": [
+    {
+      "forced": 128,
+      "uniq8": 1.0,
+      "lat_ms": 627
+    },
+    {
+      "forced": 224,
+      "uniq8": 1.0,
+      "lat_ms": 679
+    },
+    {
+      "forced": 256,
+      "uniq8": 1.0,
+      "lat_ms": 629
+    },
+    {
+      "forced": 288,
+      "uniq8": 1.0,
+      "lat_ms": 1200
+    },
+    {
+      "forced": 384,
+      "uniq8": 1.0,
+      "lat_ms": 1105
+    },
+    {
+      "forced": 512,
+      "uniq8": 1.0,
+      "lat_ms": 1293
+    },
+    {
+      "forced": 640,
+      "uniq8": 1.0,
+      "lat_ms": 1350
+    }
+  ],
+  "W3_temp": [
+    {
+      "temp": 0.0,
+      "unique": 4,
+      "diversity": 0.654
+    },
+    {
+      "temp": 0.5,
+      "unique": 4,
+      "diversity": 0.703
+    },
+    {
+      "temp": 1.0,
+      "unique": 4,
+      "diversity": 0.62
+    },
+    {
+      "temp": 1.5,
+      "unique": 4,
+      "diversity": 0.577
+    },
+    {
+      "temp": 2.0,
+      "unique": 4,
+      "diversity": 0.684
+    }
+  ],
+  "W4_json": {
+    "valid": 8,
+    "conform": 8,
+    "n": 8
+  },
+  "W5_notfound": {
+    "absent": {
+      "admit": 7,
+      "halluc": 1,
+      "n": 8
+    },
+    "present": {
+      "hit": 8,
+      "n": 8
+    }
+  }
+}
