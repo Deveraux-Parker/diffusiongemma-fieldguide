@@ -100,7 +100,7 @@ footer code{font-family:var(--mono);color:var(--ink);background:#EFF2EE;padding:
     <div class="stat"><div class="n">110/110</div><div class="l">facts retrieved, any position</div></div>
     <div class="stat"><div class="n">92%</div><div class="l">context fill, coherence still flat</div></div>
     <div class="stat"><div class="n">8/8</div><div class="l">valid strict JSON</div></div>
-    <div class="stat"><div class="n">~806</div><div class="l">tok/s peak (single user)</div></div>
+    <div class="stat"><div class="n">~8k</div><div class="l">tok/s prefill · ~550 gen</div></div>
   </div>
 </div></header>
 
@@ -126,7 +126,7 @@ footer code{font-family:var(--mono);color:var(--ink);background:#EFF2EE;padding:
   <div class="grid3" style="margin-top:18px">
     <div class="feat"><div class="tag">reasons over data</div><h3>Computed retrieval</h3><p>Highest reading, first threshold-crossing, anomaly count — correct over a long series.</p><div class="metric">max · crossing · count ✓</div></div>
     <div class="feat"><div class="tag">structured output</div><h3>Reliable strict JSON</h3><p>A fixed schema with no prose — it complied every time.</p><div class="metric">8 / 8 valid</div></div>
-    <div class="feat"><div class="tag">throughput</div><h3>A single-user speed demon</h3><p>It denoises a whole 256-token canvas at once, so short answers land in ~106 ms and throughput <i>rises</i> with output length.</p><div class="metric">~806 tok/s peak</div></div>
+    <div class="feat"><div class="tag">throughput</div><h3>Fast both ways</h3><p>Reads a 16k prompt in ~1.9 s (~8,000 tok/s prefill) and writes at ~525–575 tok/s. It denoises 256-token canvases, so generation throughput <i>rises</i> with output length.</p><div class="metric">8k prefill · ~550 gen</div></div>
   </div>
 </section>
 
@@ -140,6 +140,29 @@ footer code{font-family:var(--mono);color:var(--ink);background:#EFF2EE;padding:
     <div class="feat"><div class="tag">tool use</div><h3>Clean tool calls</h3><p>Single and parallel tool calls and full round-trips all produced valid JSON with the right finish reason.</p><div class="metric">valid · parallel ✓</div></div>
     <div class="feat"><div class="tag">multilingual</div><h3>Natural in many languages</h3><p>Japanese, Chinese, and French generations are fluent and idiomatic.</p><div class="metric">JA · ZH · FR ✓</div></div>
   </div>
+</section>
+
+<!-- 2.5 SPEED DATA -->
+<section id="speed">
+  <div class="sh"><span class="eyebrow">Measured speed</span>
+  <h2>Prefill and generation, by the numbers.</h2></div>
+  <p class="sub">On a single RTX 4090 (fp8 KV, single-user). Prefill = time to read your prompt before generation starts; generation = pure decode, measured from the first output token.</p>
+  <div class="card" style="padding:6px 8px;overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:14px">
+      <thead><tr style="color:var(--ink2);text-align:left">
+        <th style="padding:14px 18px;font-weight:500">context</th>
+        <th style="padding:14px 18px;font-weight:500">prefill (TTFT)</th>
+        <th style="padding:14px 18px;font-weight:500">prefill rate</th>
+        <th style="padding:14px 18px;font-weight:500">generation (decode)</th>
+      </tr></thead>
+      <tbody>
+        <tr style="border-top:1px solid var(--hair)"><td style="padding:13px 18px">2,000 tok</td><td style="padding:13px 18px">0.44 s</td><td style="padding:13px 18px">~4,500 tok/s</td><td style="padding:13px 18px;color:var(--green-dk);font-weight:600">~570 tok/s</td></tr>
+        <tr style="border-top:1px solid var(--hair)"><td style="padding:13px 18px">8,000 tok</td><td style="padding:13px 18px">0.93 s</td><td style="padding:13px 18px">~8,500 tok/s</td><td style="padding:13px 18px;color:var(--green-dk);font-weight:600">~540 tok/s</td></tr>
+        <tr style="border-top:1px solid var(--hair)"><td style="padding:13px 18px">16,000 tok</td><td style="padding:13px 18px">1.94 s</td><td style="padding:13px 18px">~8,200 tok/s</td><td style="padding:13px 18px;color:var(--green-dk);font-weight:600">~525 tok/s</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout note"><b>Generation is content-dependent.</b> The diffusion sampler runs more denoising steps for less-predictable text, so decode is a range — ~525–575 tok/s for steady prose, down to ~305 tok/s for dense, high-entropy output. Throughput <i>rises</i> with output length (it works in 256-token canvases). fp8 KV costs no speed vs fp16 — it just buys you more context.</div>
 </section>
 
 <!-- 3 PROMPTING -->
@@ -188,7 +211,7 @@ footer code{font-family:var(--mono);color:var(--ink);background:#EFF2EE;padding:
   "temperature": 0, "max_tokens": 60 }'</pre>
     </div>
     <div style="display:flex;flex-direction:column;justify-content:center">
-      <div class="callout" style="margin:0"><b>fp8 isn't a tax — it's a win.</b> Half-size KV means decode is <b>faster or equal, never slower</b> than fp16 (it's bandwidth-bound — ~595→818 tok/s at 2k context), with no measurable retrieval-quality loss. Use it whenever you want more context or more speed.</div>
+      <div class="callout" style="margin:0"><b>fp8 isn't a tax.</b> Half-size KV cache costs <b>no measurable decode speed</b> vs fp16 (both ~525–575 tok/s) and no retrieval-quality loss — it just buys you more context (8k → 18k on a 24 GB card). Use it whenever you want headroom.</div>
     </div>
   </div>
 </section>

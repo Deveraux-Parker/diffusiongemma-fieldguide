@@ -81,29 +81,28 @@ varying distance from the question; 100 % is perfect.
 @ 17k context (18k/fp8  server):   dist 300/1000/5000/10000/16000 =  5/5 each
 ```
 
-**Decode throughput — fp8 vs fp16 KV.** *Pure* decode, measured from the first generated
-token (prefill excluded via the marginal method: `(t1024 − t256) / 768`, same prompt so
-prefill cancels exactly). Low-entropy continuation (best case):
+**Prefill + generation (fp8 KV, single-user, 4090).** Prefill = time to read the prompt
+before generation starts. Generation = *pure* decode, measured from the first output token
+(marginal method `(t1024 − t256)/768`, so prefill cancels exactly).
 
 ```
-context   fp16 KV    fp8 KV     
-  2k      595 t/s    818 t/s    fp8 faster
-  8k      493 t/s    514 t/s    fp8 faster
+context    prefill (TTFT)   prefill rate    generation (decode)
+  2k          0.44 s        ~4,500 tok/s        ~570 tok/s
+  8k          0.93 s        ~8,500 tok/s        ~540 tok/s
+ 16k          1.94 s        ~8,200 tok/s        ~525 tok/s
 ```
 
-→ **fp8 KV is faster or equal, never a tax** (decode is bandwidth-bound; half-size KV = less
-to read). The exact margin is noisy at small per-canvas times (~+4 % to +38 %).
-
-**Decode is content-dependent.** The diffusion sampler runs more denoising steps for complex/
-less-predictable text. So decode is a *range*: a predictable continuation hits **500–800 tok/s**,
-while a dense 800-token technical explainer ran **~305 tok/s** (high entropy → more steps). Both
-measured post-prefill. (Earlier "219/285 tok/s" figures were total-time-including-prefill or
-prefix-warmed — they undercount; use the pure-decode numbers above.)
-
-**Prefill / latency.** Prefilling a 17k prompt (single chunk) ≈ **2.0 s** (this is the TTFT cost,
-separate from decode). Short answers on small prompts return in ~106 ms (the denoiser
-early-stops). Latency rises one 256-token canvas at a time; throughput *rises* with output
-length (opposite of autoregressive). An 800-token explainer: coherent, uniq-8gram 1.00.
+- **Prefill** runs at ~8,000 tok/s at scale (a 16k prompt is ready in ~1.9 s); the 2k row is
+  lower only because a fixed first-canvas cost dominates such a short prompt.
+- **Generation is content-dependent.** The sampler runs more denoising steps for less-
+  predictable text, so decode is a *range*: **~525–575 tok/s** for steady prose, down to
+  **~305 tok/s** for dense, high-entropy output (e.g. a packed technical explainer; that 800-token
+  output was fully coherent, uniq-8gram 1.00). Throughput *rises* with output length (256-token
+  canvases), the opposite of autoregressive.
+- **fp8 vs fp16 KV: comparable decode** (both ~525–595 tok/s; differences are within
+  measurement noise — fp8 is *not* a speed tax). fp8's real benefit is memory → more context.
+  (Earlier "219/305/+38%" style figures included prefill or were prefix-warmed/noisy — use the
+  pure-decode numbers here.)
 
 Other (from the broader benchmark): generation coherence flat to 92 % context fill, strict
 JSON 8/8, computed retrieval (max/threshold/count) correct, tool use clean, multilingual fine.
