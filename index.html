@@ -143,7 +143,7 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
         <span class="mono muted">fill ≈ 5.8k tokens · 5 trials/point</span>
       </div>
       <div id="valley"></div>
-      <figcaption>Retrieval accuracy vs. token-distance from the question — the signature failure mode.</figcaption>
+      <figcaption>Retrieval accuracy vs. distance from the question, <b>at one ~5.8k-token prompt</b>. The valley is real — but its position shifts with prompt length (see §03).</figcaption>
     </figure>
 
     <div class="stats">
@@ -193,8 +193,8 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
     <span class="eyebrow">Where to put the information that matters</span>
     <h2>Two safe zones, one dead zone in between.</h2></div></div>
   <p class="sub">The model uses sliding-window attention (window ≈ 1024 tokens) with full attention only every sixth layer.
-    The result: it reliably reads facts <b>right before the question</b> (recency) and facts <b>near the very start</b> (primacy) —
-    but a fact stranded in the late-middle, roughly 600–1500 tokens before the question, gets lost.</p>
+    Two zones are reliable: facts <b>near the very start</b> (primacy) and facts <b>right before the question</b> (recency).
+    In between, a fact can be lost — and as the next section shows, <i>where</i> it’s lost depends on the prompt’s length, not a fixed distance.</p>
 
   <div class="grid2">
     <div class="panel">
@@ -221,9 +221,29 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
   </div>
 </section>
 
-<!-- 3. WHAT IT'S GREAT AT -->
-<section id="strengths">
+<!-- 3. THE TWIST: DEAD ZONE MOVES -->
+<section id="twist">
   <div class="sh"><span class="idx">03</span><div>
+    <span class="eyebrow">The plot twist</span>
+    <h2>The dead zone isn’t a distance. It moves with length.</h2></div></div>
+  <p class="sub">We expected the dead zone to sit a fixed distance before the question. It doesn’t.
+    Hold a fact at <b>exactly 1000 tokens from the question</b> and change only the prompt’s total length,
+    and retrieval flips on and off — perfect, gone, perfect, gone:</p>
+
+  <div class="panel">
+    <div id="osc" class="chartbox"></div>
+    <div class="callout"><b>What this means:</b> the failure is tied to a fact’s <b>absolute position</b> in the prompt — there are
+      recurring “bad bands” (roughly every ~1900 tokens) where binding fails, likely from block-aligned sparse attention.
+      The same fact, the same distance from your question, is readable at one length and lost at another.</div>
+    <div class="callout warn" style="margin-top:14px"><b>So the only safe move</b> is to stop trying to pick a safe distance in the middle.
+      Put must-retrieve facts at the <b>very start</b> or in the <b>last few hundred tokens</b> before the question — the two zones that hold at every length.
+      <span class="muted">(My earlier “dead zone = 600–1500 tokens” was this band measured at a single ~5.8k prompt, and over-generalized — corrected here.)</span></div>
+  </div>
+</section>
+
+<!-- 4. WHAT IT'S GREAT AT -->
+<section id="strengths">
+  <div class="sh"><span class="idx">04</span><div>
     <span class="eyebrow">Its real strengths</span>
     <h2>Front-load it, and a full context barely costs you anything.</h2></div></div>
   <p class="sub">When the important information sits up front, generation quality is flat across the entire context range —
@@ -249,9 +269,9 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
   </div>
 </section>
 
-<!-- 4. QUIRKS -->
+<!-- 5. QUIRKS -->
 <section id="quirks">
-  <div class="sh"><span class="idx">04</span><div>
+  <div class="sh"><span class="idx">05</span><div>
     <span class="eyebrow">Quirks worth knowing</span>
     <h2>How a diffusion model behaves differently.</h2></div></div>
   <p class="sub">These aren’t bugs so much as consequences of denoising a whole canvas at once instead of predicting one token at a time.</p>
@@ -284,9 +304,9 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
   </div>
 </section>
 
-<!-- 5. MITIGATION -->
+<!-- 6. MITIGATION -->
 <section id="mitigation">
-  <div class="sh"><span class="idx">05</span><div>
+  <div class="sh"><span class="idx">06</span><div>
     <span class="eyebrow">Beating the dead zone</span>
     <h2>You can’t shout louder. You have to move.</h2></div></div>
   <p class="sub">If a fact has to live in the middle of a long prompt, can you rescue it by repeating it?
@@ -304,9 +324,9 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
   </div>
 </section>
 
-<!-- 6. CHEATSHEET -->
+<!-- 7. CHEATSHEET -->
 <section id="cheat">
-  <div class="sh"><span class="idx">06</span><div>
+  <div class="sh"><span class="idx">07</span><div>
     <span class="eyebrow">Putting it to work</span>
     <h2>Six rules that make it reliable.</h2></div></div>
   <div class="rules">
@@ -315,7 +335,7 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
     <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
       <p>Stuck with a mid-prompt fact? <b>Echo one copy</b> into a top header or just before the question — don’t repeat it in place.</p></div></div>
     <div class="rule dont"><span class="mk">✕</span><div><div class="h">Avoid</div>
-      <p>Don’t bury a critical fact in the <b>late-middle</b> of a long prompt (~600–1500 tokens before the question).</p></div></div>
+      <p>Don’t bury a critical fact <b>anywhere in the middle</b> of a long prompt — there’s no safe middle distance; it depends on total length.</p></div></div>
     <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
       <p>Ask for answers as a <b>short sentence</b> and parse them — never “reply with only X.”</p></div></div>
     <div class="rule dont"><span class="mk">✕</span><div><div class="h">Avoid</div>
@@ -354,6 +374,9 @@ const DATA = {
          rows:[ {label:"26% full",v:[5,5,5,5,4,5,5]}, {label:"76% full",v:[5,5,5,5,0,0,5]} ] },
   temp:[ {t:"0.0",d:.654},{t:"0.5",d:.703},{t:"1.0",d:.620},{t:"1.5",d:.577},{t:"2.0",d:.684} ],
   canvas:[ {n:128,ms:627},{n:224,ms:679},{n:256,ms:629},{n:288,ms:1200},{n:384,ms:1105},{n:512,ms:1293},{n:640,ms:1350} ],
+  osc:[ {f:"4.0k",h:1},{f:"4.3k",h:6},{f:"4.6k",h:6},{f:"4.9k",h:6},{f:"5.2k",h:1},
+        {f:"5.5k",h:0},{f:"5.8k",h:0},{f:"6.1k",h:1},{f:"6.4k",h:6},{f:"6.7k",h:6},
+        {f:"7.0k",h:6},{f:"7.3k",h:1},{f:"7.6k",h:0} ],
   mitig:[ {k:"1 copy · dead zone",v:0,ok:false},
           {k:"2 copies · back-to-back",v:0,ok:false},
           {k:"3 copies · back-to-back",v:0,ok:false},
@@ -492,6 +515,27 @@ function fillBars(){document.querySelectorAll(".fill[data-w]").forEach(f=>{
   const w=f.dataset.w+"%"; if(reduce){f.style.width=w;return;}
   requestAnimationFrame(()=>{setTimeout(()=>f.style.width=w,120);});});}
 
+/* ---------- oscillation: vertical bars, hit-rate vs fill at fixed distance ---------- */
+function drawOsc(){
+  const W=900,H=260,pl=44,pr=16,pt=24,pb=52,n=DATA.osc.length;
+  const bw=(W-pl-pr)/n, y=v=>pt+(1-v/6)*(H-pt-pb);
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%",preserveAspectRatio:"xMidYMid meet"});
+  for(let g=0;g<=6;g+=3){const yy=y(g);
+    svg.appendChild(el("line",{x1:pl,y1:yy,x2:W-pr,y2:yy,stroke:C.grid}));
+    const t=el("text",{x:pl-8,y:yy+4,"text-anchor":"end","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});
+    t.textContent=Math.round(g/6*100)+"%";svg.appendChild(t);}
+  DATA.osc.forEach((p,i)=>{const bx=pl+i*bw+bw*0.16,bwi=bw*0.68,ok=p.h>=4;
+    const r=el("rect",{x:bx,y:y(p.h),width:bwi,height:y(0)-y(p.h),rx:3,
+      fill:ok?C.cyan:C.crimson,opacity:ok?.92:.5});
+    if(p.h===0){r.setAttribute("height",2);r.setAttribute("y",y(0)-2);}
+    const tt=el("title");tt.textContent=`${p.f} prompt → ${p.h}/6 found`;r.appendChild(tt);svg.appendChild(r);
+    const t=el("text",{x:bx+bwi/2,y:H-30,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":10,fill:C.muted});
+    t.textContent=p.f;svg.appendChild(t);});
+  const xt=el("text",{x:W/2,y:H-10,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":11.5,fill:"#C5CBDA"});
+  xt.textContent="total prompt length  (fact pinned at 1000 tokens from the question the whole time)";svg.appendChild(xt);
+  $("#osc").appendChild(svg);
+}
+
 /* ---------- mitigation: horizontal bars (0..8) ---------- */
 function drawMitig(){
   const root=$("#mitig");
@@ -518,7 +562,7 @@ function drawMitig(){
   root.appendChild(cap);
 }
 
-drawValley();drawCoh();drawHeat();drawTemp();drawCanvas();drawMitig();noiseField();fillBars();
+drawValley();drawCoh();drawHeat();drawTemp();drawCanvas();drawOsc();drawMitig();noiseField();fillBars();
 </script>
 </body>
 </html>

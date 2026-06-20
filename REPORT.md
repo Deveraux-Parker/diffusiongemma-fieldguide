@@ -256,6 +256,52 @@ cannot reliably read it.
 echo a copy of it into a header at the top **or** into the lines just before your
 question. Don't bother repeating it in place.
 
+---
+
+# Part 5 — CORRECTION: the dead zone is position-anchored and oscillates with length (NEWBENCH)
+
+A multi-fill distance map (`NEWBENCH/multifill_distance_map_benchmark.py`) **disconfirmed**
+the earlier "fixed dead zone 600–1500 tokens before the question." Holding distance
+constant and sweeping fill:
+
+```
+needle at a FIXED ~1000 tok from the question, exact-code retrieval:
+  fill   4500  5500  6500  7300       (10 reps, isolate_checksum_fill.py)
+  hits   10/10 0/10  10/10 0/10        <- identical for plain AND checksum needles
+```
+
+The result **oscillates with fill** at the same distance — so the dead zone is *not* a
+fixed distance from the question, and *not* a function of needle content (the trailing
+checksum landmark changed nothing).
+
+A fine fill-sweep at two distances (`fine_fill_sweep.py`, dist 1000 & 1500) shows the
+dead bands align by **needle ABSOLUTE POSITION**, not by fill or distance:
+
+```
+dist~1000  dead at needle-pos ~ 2959, 4200–5058, 6279–6556
+dist~1500  dead at needle-pos ~ 2448, 4265            (overlaps the ~4200–4800 band)
+```
+
+So there are **quasi-periodic dead bands at certain absolute positions** (~2500, ~4400,
+~6400; spacing ~1900 tok), with pass bands between and at the extremes. The original
+"distance valley" (Parts 1/Wave-2) was the ~4200–5100 position band viewed at a single
+~5.8k-token fill, misread as a distance effect.
+
+**Corrected model.** Two reliable zones — the **very start** (primacy) and the **last
+few hundred tokens** before the question (recency / sliding window). Everything in
+between is a position-dependent minefield: the same fact at the same distance can be
+read or confabulated depending only on total prompt length. You cannot pick a safe
+*distance* in the middle.
+
+**Practical guidance is unchanged and now better-justified:** put must-retrieve values
+at the very top or right before the question; never rely on a middle position; echo a
+compact index (key+value+checksum) into a safe zone; validate exact IDs. Likely mechanism:
+block/chunk-aligned sparse attention whose tiling shifts against absolute position as the
+prompt grows. Open: pin the exact period and tie it to the attention block size.
+
+Harnesses: `NEWBENCH/multifill_distance_map_benchmark.py`, `isolate_checksum_fill.py`,
+`fine_fill_sweep.py` (timestamped run dirs with raw.jsonl + summary.md).
+
 ## Files
 - `bench_kv.py` / `results.json` / `raw.jsonl` — Part 1 (retrieval)
 - `bench_coherence.py` / `results_coherence.json` / `raw_coherence.jsonl` — Part 2 (coherence + shaping)
