@@ -301,9 +301,45 @@ RETRIEVAL_INDEX:
   </div>
 </section>
 
-<!-- 07 CHEATSHEET -->
-<section id="cheat">
+<!-- 07 WHERE IT FITS -->
+<section id="fit">
   <div class="sh"><span class="idx">07</span><div>
+    <span class="eyebrow">When to reach for it</span>
+    <h2>It’s a generation engine, not a reader.</h2></div></div>
+  <p class="sub">Nearly everything we found collapses into one limitation: reading an exact fact out of the <i>middle</i> of a long prompt.
+    Generation, coherence, structured output, reasoning, speed — all strengths. So let it <b>generate</b> freely, and keep what it must <b>read</b> in the safe zones.</p>
+
+  <div class="panel">
+    <div style="display:grid;grid-template-columns:84px 1fr 1fr;gap:12px;align-items:stretch">
+      <div></div>
+      <div style="font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center">short response</div>
+      <div style="font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center">long response</div>
+
+      <div style="display:flex;align-items:center;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">short<br>prompt</div>
+      <div style="border-radius:12px;padding:18px;border:1px solid var(--hair);background:var(--bg2)">
+        <div style="font-family:var(--disp);font-weight:600;font-size:15px;color:var(--muted)">Fine — unremarkable</div>
+        <p style="margin:6px 0 0;font-size:14px;color:var(--muted)">Fast (~106 ms floor), but any model does this. You’re not using its edge.</p></div>
+      <div style="border-radius:12px;padding:18px;border:1px solid var(--cyan);background:rgba(63,224,204,.07)">
+        <div style="font-family:var(--disp);font-weight:700;font-size:15px;color:var(--cyan)">★ Sweet spot</div>
+        <p style="margin:6px 0 0;font-size:14px;color:#C5CBDA">Drafting, code, structured synthesis, reasoning. Stays coherent <i>and</i> throughput rises with length — cheapest per token here.</p></div>
+
+      <div style="display:flex;align-items:center;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">long<br>prompt</div>
+      <div style="border-radius:12px;padding:18px;border:1px solid var(--crimson);background:rgba(255,84,112,.06)">
+        <div style="font-family:var(--disp);font-weight:600;font-size:15px;color:var(--crimson)">⚠ Handle with care</div>
+        <p style="margin:6px 0 0;font-size:14px;color:#C5CBDA">Extraction / QA. Confabulates from the middle — only works with the safe-zone index architecture (§06).</p></div>
+      <div style="border-radius:12px;padding:18px;border:1px solid var(--amber);background:rgba(246,169,59,.05)">
+        <div style="font-family:var(--disp);font-weight:600;font-size:15px;color:var(--amber)">Mixed</div>
+        <p style="margin:6px 0 0;font-size:14px;color:#C5CBDA">Gist &amp; global transforms are fine; detail-faithful work needs the facts staged into a safe-zone index first.</p></div>
+    </div>
+
+    <div class="callout"><b>Fits:</b> drafting &amp; expansion, code generation, data→text, structured JSON workers, reasoning over a small focused context, fast single-user tool/agent loops, front-loaded time-series.</div>
+    <div class="callout warn" style="margin-top:14px"><b>Avoid:</b> naive RAG (dump docs → ask), multi-user batched serving (it saturates the GPU on one request — provision per-session), and anything needing byte-exact reproducibility.</div>
+  </div>
+</section>
+
+<!-- 08 CHEATSHEET -->
+<section id="cheat">
+  <div class="sh"><span class="idx">08</span><div>
     <span class="eyebrow">Putting it to work</span>
     <h2>Six rules that make it reliable.</h2></div></div>
   <div class="rules">
