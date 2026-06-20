@@ -3,261 +3,331 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DiffusionGemma — a fast, faithful long-context model</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<title>DiffusionGemma Local Benchmark Notes</title>
 <style>
 :root{
-  --bg:#FAFBF9; --surface:#FFFFFF; --ink:#13181A; --ink2:#586168; --faint:#97A0A5;
-  --green:#0CA678; --green-dk:#0B8061; --green-bg:rgba(12,166,120,.08);
-  --blue:#2D7FF9; --gold:#C98A1A;
-  --line:rgba(19,24,26,.10); --hair:rgba(19,24,26,.07);
-  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
-  --disp:"Sora",system-ui,sans-serif; --body:"Inter",system-ui,sans-serif;
+  --bg:#080b0d;
+  --panel:#10161a;
+  --panel2:#131b20;
+  --ink:#e8eef1;
+  --muted:#a8b3b8;
+  --faint:#6f7d84;
+  --line:#26323a;
+  --line2:#1b252b;
+  --green:#31c48d;
+  --blue:#6ea8fe;
+  --amber:#d7a64a;
+  --red:#ef6b6b;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden}
-.wrap{max-width:1060px;margin:0 auto;padding:0 28px}
-a{color:var(--green-dk)}
-h1,h2,h3{font-family:var(--disp);font-weight:700;letter-spacing:-.02em;line-height:1.05;margin:0}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--green-dk);font-weight:500}
-.muted{color:var(--ink2)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.58}
+a{color:var(--blue)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+header{padding:64px 0 38px;border-bottom:1px solid var(--line2)}
+.kicker{font-family:var(--mono);font-size:12px;color:var(--green);text-transform:uppercase;margin-bottom:16px}
+h1,h2,h3{margin:0;letter-spacing:0;line-height:1.08}
+h1{font-size:clamp(34px,5vw,58px);font-weight:720;max-width:920px}
+h2{font-size:clamp(25px,3vw,36px);font-weight:680}
+h3{font-size:18px;font-weight:650}
+p{margin:0}
+.lede{margin-top:18px;max-width:790px;color:var(--muted);font-size:19px}
+.note{color:var(--faint);font-size:14px}
 .mono{font-family:var(--mono)}
-
-.hero{padding:80px 0 50px}
-.badge{display:inline-flex;gap:9px;align-items:center;font-family:var(--mono);font-size:12.5px;
-  background:var(--green-bg);color:var(--green-dk);border:1px solid rgba(12,166,120,.25);
-  padding:7px 14px;border-radius:100px;font-weight:500;margin-bottom:26px}
-.badge .d{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(12,166,120,.2)}
-h1.title{font-size:clamp(40px,7vw,76px);font-weight:800;margin:0 0 22px;letter-spacing:-.03em}
-h1.title .g{color:var(--green)}
-.lede{font-size:clamp(18px,2.3vw,22px);color:var(--ink2);max-width:660px;margin:0}
-.lede b{color:var(--ink);font-weight:600}
-
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;
-  box-shadow:0 1px 2px rgba(19,24,26,.04),0 8px 30px rgba(19,24,26,.04)}
-.chartcard{margin-top:40px;padding:24px 24px 16px}
-.chartcard .cap{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:6px}
-.chartcard .cap b{font-family:var(--disp);font-size:17px;font-weight:600}
-figcaption{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:10px;text-align:center}
-
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:34px}
-.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 18px}
-.stat .n{font-family:var(--disp);font-size:30px;font-weight:700;letter-spacing:-.02em;color:var(--green-dk)}
-.stat .l{font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--ink2);margin-top:5px;text-transform:uppercase}
-
-section{padding:66px 0;border-top:1px solid var(--hair)}
-.sh{margin-bottom:8px}
-h2{font-size:clamp(27px,4vw,40px);font-weight:700}
-.sub{color:var(--ink2);max-width:680px;margin:14px 0 34px;font-size:18px}
-
-.codeblock{font-family:var(--mono);font-size:13.5px;line-height:1.75;background:#0E1418;color:#D7E0E4;
-  border-radius:12px;padding:22px 24px;overflow-x:auto;white-space:pre;margin:0}
-.codeblock .c{color:#5F727C} .codeblock .flag{color:#7FB2FF} .codeblock .g{color:#3DDC97}
-.callout{border-left:3px solid var(--green);background:var(--green-bg);padding:15px 20px;border-radius:0 10px 10px 0;margin-top:22px;font-size:16px}
-.callout b{color:var(--green-dk)}
-.callout.note{border-color:var(--gold);background:rgba(201,138,26,.07)} .callout.note b{color:var(--gold)}
-
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.feat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px}
-.feat .tag{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--green-dk);font-weight:600}
-.feat h3{font-size:18px;margin:9px 0 7px;font-weight:600}
-.feat p{margin:0;color:var(--ink2);font-size:14.5px}
-.feat .metric{font-family:var(--disp);font-size:25px;font-weight:700;margin-top:13px;color:var(--ink)}
-
-.qa{font-family:var(--mono);font-size:13.5px;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:6px}
-.qa .row{padding:14px 20px;border-bottom:1px solid var(--hair)}
-.qa .row:last-child{border-bottom:none}
-.qa .lbl{color:var(--faint);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
-.qa .good{color:var(--green-dk)}
-
-footer{padding:50px 0 80px;border-top:1px solid var(--hair);color:var(--ink2);font-size:14px}
-footer code{font-family:var(--mono);color:var(--ink);background:#EFF2EE;padding:2px 7px;border-radius:5px;font-size:13px;border:1px solid var(--line)}
-
-@media(max-width:840px){ .stats{grid-template-columns:repeat(2,1fr)} .grid2,.grid3{grid-template-columns:1fr} }
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+section{padding:48px 0;border-bottom:1px solid var(--line2)}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:22px}
+.sub{color:var(--muted);max-width:780px;margin-top:10px}
+.grid{display:grid;gap:16px}
+.grid.cols4{grid-template-columns:repeat(4,1fr)}
+.grid.cols3{grid-template-columns:repeat(3,1fr)}
+.grid.cols2{grid-template-columns:repeat(2,1fr)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px}
+.metric{font-family:var(--mono);font-size:28px;color:var(--ink);line-height:1.1;margin-bottom:8px}
+.label{font-family:var(--mono);font-size:12px;color:var(--faint);text-transform:uppercase}
+.tag{display:inline-block;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+.card p{color:var(--muted);font-size:14px}
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+table{width:100%;min-width:780px;border-collapse:collapse;font-family:var(--mono);font-size:13px;background:var(--panel);border:0}
+th,td{padding:13px 14px;text-align:left;border-bottom:1px solid var(--line2);vertical-align:top}
+th{color:var(--faint);font-weight:500;background:var(--panel2)}
+tr:last-child td{border-bottom:0}
+.pass{color:var(--green);font-weight:700}
+.warn{color:var(--amber);font-weight:700}
+.chart{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px}
+.bar-row{display:grid;grid-template-columns:118px 1fr 80px;gap:12px;align-items:center;font-family:var(--mono);font-size:13px;margin:13px 0}
+.track{height:12px;background:#0b1013;border:1px solid var(--line2);border-radius:999px;overflow:hidden}
+.bar{height:100%;background:linear-gradient(90deg,var(--green),var(--blue))}
+.bar.amber{background:linear-gradient(90deg,var(--amber),var(--green))}
+pre{margin:0;background:#050708;border:1px solid var(--line);border-radius:8px;padding:17px 18px;color:#dce6ea;font-family:var(--mono);font-size:12.5px;line-height:1.62;overflow:auto}
+code{font-family:var(--mono);background:#121a1f;border:1px solid var(--line);border-radius:5px;padding:2px 6px;color:var(--ink)}
+.callout{border:1px solid var(--line);border-left:3px solid var(--amber);background:#11161a;border-radius:8px;padding:16px 18px;color:var(--muted)}
+.callout strong{color:var(--ink)}
+.sample{display:grid;grid-template-columns:170px 1fr;gap:12px;padding:14px 0;border-top:1px solid var(--line2)}
+.sample:first-child{border-top:0;padding-top:0}
+.sample-name{font-family:var(--mono);font-size:12px;color:var(--faint);text-transform:uppercase}
+.sample-body{font-family:var(--mono);font-size:13px;color:var(--muted);overflow:auto}
+footer{padding:38px 0 70px;color:var(--faint);font-size:14px}
+@media(max-width:880px){
+  .grid.cols4,.grid.cols3,.grid.cols2{grid-template-columns:1fr}
+  .section-head{display:block}
+  .bar-row{grid-template-columns:92px 1fr 68px}
+  .sample{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
-
-<header class="hero"><div class="wrap">
-  <div class="badge"><span class="d"></span>DiffusionGemma-26B-A4B · block-diffusion · RTX 4090</div>
-  <h1 class="title">It reads your whole<br>context. <span class="g">Perfectly.</span></h1>
-  <p class="lede">A fast block-diffusion model that's genuinely excellent at long-context work: it retrieves a fact from <b>anywhere</b> in the prompt,
-    stays coherent at full context, computes over data, and emits clean JSON — at single-user speeds that beat autoregressive models on long outputs.</p>
-
-  <figure class="card chartcard">
-    <div class="cap"><b>Find a fact, anywhere in a 7,000-token prompt</b><span class="mono muted">10 trials/point</span></div>
-    <div id="retr"></div>
-    <figcaption>Front, middle, or tail — every position reads at 100%. 110 / 110 facts retrieved across the full depth of the context.</figcaption>
-  </figure>
-
-  <div class="stats">
-    <div class="stat"><div class="n">110/110</div><div class="l">facts retrieved, any position</div></div>
-    <div class="stat"><div class="n">92%</div><div class="l">context fill, coherence still flat</div></div>
-    <div class="stat"><div class="n">8/8</div><div class="l">valid strict JSON</div></div>
-    <div class="stat"><div class="n">~8k</div><div class="l">tok/s prefill · ~550 gen</div></div>
+<header>
+  <div class="wrap">
+    <div class="kicker">DiffusionGemma-26B-A4B-it-AWQ-INT4 / vLLM / RTX 4090</div>
+    <h1>Local benchmark notes for serving DiffusionGemma on one 4090.</h1>
+    <p class="lede">This page keeps to measured behavior: throughput, long-context retrieval checks, JSON/tool behavior, and the Docker flags needed to avoid the old chunked-prefill artifact.</p>
   </div>
-</div></header>
+</header>
 
 <main class="wrap">
-
-<!-- 1 STRENGTHS -->
-<section id="strengths">
-  <div class="sh"><span class="eyebrow">What it does</span>
-  <h2>A fast, faithful long-context worker.</h2></div>
-  <p class="sub">It reads anywhere in the context, holds its quality under load, reasons over data, and answers in clean structured form.</p>
-  <div class="grid2">
-    <div class="card chartcard" style="margin-top:0">
-      <div class="cap"><b>Retrieval vs. distance from the question</b><span class="mono muted">fill 7k</span></div>
-      <div id="retr2"></div>
-      <figcaption>Flat at 100% from the first token to the last.</figcaption>
+  <section id="summary">
+    <div class="grid cols4">
+      <div class="card">
+        <div class="metric">~8k/s</div>
+        <div class="label">prefill at 8k-16k</div>
+        <p>Measured prompt read rate on a single-user local vLLM server.</p>
+      </div>
+      <div class="card">
+        <div class="metric">~525-575/s</div>
+        <div class="label">steady decode</div>
+        <p>Typical prose generation range. Dense/high-entropy output can be slower.</p>
+      </div>
+      <div class="card">
+        <div class="metric">110/110</div>
+        <div class="label">8k retrieval probe</div>
+        <p>Clean fp16-KV baseline with the corrected prefill setting.</p>
+      </div>
+      <div class="card">
+        <div class="metric">15/15</div>
+        <div class="label">18k fp8 spot check</div>
+        <p>Needle retrieval at about 16.8k prompt tokens across five positions.</p>
+      </div>
     </div>
-    <div class="card chartcard" style="margin-top:0">
-      <div class="cap"><b>Generation coherence vs. context fill</b><span class="mono muted">structured output</span></div>
-      <div id="coh"></div>
-      <figcaption>A 92%-full prompt produces the same clean, complete answer as an empty one.</figcaption>
+  </section>
+
+  <section id="results">
+    <div class="section-head">
+      <div>
+        <div class="kicker">Results</div>
+        <h2>What passed locally</h2>
+        <p class="sub">These are not broad model claims. They are the local checks run against this checkpoint and serving configuration.</p>
+      </div>
     </div>
-  </div>
-  <div class="grid3" style="margin-top:18px">
-    <div class="feat"><div class="tag">reasons over data</div><h3>Computed retrieval</h3><p>Highest reading, first threshold-crossing, anomaly count — correct over a long series.</p><div class="metric">max · crossing · count ✓</div></div>
-    <div class="feat"><div class="tag">structured output</div><h3>Reliable strict JSON</h3><p>A fixed schema with no prose — it complied every time.</p><div class="metric">8 / 8 valid</div></div>
-    <div class="feat"><div class="tag">throughput</div><h3>Fast both ways</h3><p>Reads a 16k prompt in ~1.9 s (~8,000 tok/s prefill) and writes at ~525–575 tok/s. It denoises 256-token canvases, so generation throughput <i>rises</i> with output length.</p><div class="metric">8k prefill · ~550 gen</div></div>
-  </div>
-</section>
 
-<!-- 2 GENERATION -->
-<section id="gen">
-  <div class="sh"><span class="eyebrow">Beyond retrieval</span>
-  <h2>It writes, computes, and calls tools.</h2></div>
-  <p class="sub">The same model that reads your context cleanly also generates it. Long outputs stay coherent and non-repetitive, multilingual is natural, and tool calls come back as valid JSON.</p>
-  <div class="grid3">
-    <div class="feat"><div class="tag">long outputs</div><h3>Coherent at length</h3><p>A 900-token technical explainer came back fully coherent and non-repetitive (uniq-8gram 1.00). It denoises 256-token canvases, so throughput <i>rises</i> with output length.</p><div class="metric">900 tok @ ~430 tok/s</div></div>
-    <div class="feat"><div class="tag">tool use</div><h3>Clean tool calls</h3><p>Single and parallel tool calls and full round-trips all produced valid JSON with the right finish reason.</p><div class="metric">valid · parallel ✓</div></div>
-    <div class="feat"><div class="tag">multilingual</div><h3>Natural in many languages</h3><p>Japanese, Chinese, and French generations are fluent and idiomatic.</p><div class="metric">JA · ZH · FR ✓</div></div>
-  </div>
-</section>
-
-<!-- 2.5 SPEED DATA -->
-<section id="speed">
-  <div class="sh"><span class="eyebrow">Measured speed</span>
-  <h2>Prefill and generation, by the numbers.</h2></div>
-  <p class="sub">On a single RTX 4090 (fp8 KV, single-user). Prefill = time to read your prompt before generation starts; generation = pure decode, measured from the first output token.</p>
-  <div class="card" style="padding:6px 8px;overflow-x:auto">
-    <table style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:14px">
-      <thead><tr style="color:var(--ink2);text-align:left">
-        <th style="padding:14px 18px;font-weight:500">context</th>
-        <th style="padding:14px 18px;font-weight:500">prefill (TTFT)</th>
-        <th style="padding:14px 18px;font-weight:500">prefill rate</th>
-        <th style="padding:14px 18px;font-weight:500">generation (decode)</th>
-      </tr></thead>
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>area</th>
+          <th>config / prompt</th>
+          <th>result</th>
+          <th>notes</th>
+        </tr>
+      </thead>
       <tbody>
-        <tr style="border-top:1px solid var(--hair)"><td style="padding:13px 18px">2,000 tok</td><td style="padding:13px 18px">0.44 s</td><td style="padding:13px 18px">~4,500 tok/s</td><td style="padding:13px 18px;color:var(--green-dk);font-weight:600">~570 tok/s</td></tr>
-        <tr style="border-top:1px solid var(--hair)"><td style="padding:13px 18px">8,000 tok</td><td style="padding:13px 18px">0.93 s</td><td style="padding:13px 18px">~8,500 tok/s</td><td style="padding:13px 18px;color:var(--green-dk);font-weight:600">~540 tok/s</td></tr>
-        <tr style="border-top:1px solid var(--hair)"><td style="padding:13px 18px">16,000 tok</td><td style="padding:13px 18px">1.94 s</td><td style="padding:13px 18px">~8,200 tok/s</td><td style="padding:13px 18px;color:var(--green-dk);font-weight:600">~525 tok/s</td></tr>
+        <tr>
+          <td>Needle retrieval</td>
+          <td>8k max context, fp16 KV, <code>--max-num-batched-tokens 8192</code></td>
+          <td class="pass">110/110</td>
+          <td>Distances swept from near the question to the front of a 7k-token prompt.</td>
+        </tr>
+        <tr>
+          <td>Needle retrieval</td>
+          <td>18k max context, fp8 KV, <code>--max-num-batched-tokens 18432</code></td>
+          <td class="pass">15/15</td>
+          <td>Fresh spot check at about 16.8k prompt tokens; positions 5%, 25%, 50%, 75%, 92%.</td>
+        </tr>
+        <tr>
+          <td>Sequential data</td>
+          <td>synthetic time-series/event windows, JSON answer format</td>
+          <td class="pass">format 1.00</td>
+          <td>Retrieval was high but not perfect in older 8k sweeps; exact-value tasks should still validate outputs.</td>
+        </tr>
+        <tr>
+          <td>Structured output</td>
+          <td>strict JSON extraction prompt</td>
+          <td class="pass">parsed</td>
+          <td>Fresh check returned valid JSON with the expected fields and values.</td>
+        </tr>
+        <tr>
+          <td>Tool calls</td>
+          <td>OpenAI-compatible <code>tools</code> plus <code>tool_choice:"auto"</code></td>
+          <td class="pass">called tool</td>
+          <td>Fresh check emitted a valid function call and completed a tool-result round trip.</td>
+        </tr>
       </tbody>
     </table>
-  </div>
-  <div class="callout note"><b>Generation is content-dependent.</b> The diffusion sampler runs more denoising steps for less-predictable text, so decode is a range — ~525–575 tok/s for steady prose, ~430 tok/s for dense, high-entropy output. Throughput <i>rises</i> with output length (it works in 256-token canvases). fp8 KV costs no speed vs fp16 — it just buys you more context.</div>
-</section>
+    </div>
+  </section>
 
-<!-- 3 PROMPTING -->
-<section id="tip">
-  <div class="sh"><span class="eyebrow">Getting the best from it</span>
-  <h2>Ask in sentences.</h2></div>
-  <p class="sub">One small habit gets the most out of the diffusion sampler: ask for answers as a short sentence or JSON rather than a bare token, then parse the value out. It keeps responses crisp and reliable.</p>
-  <div class="qa">
-    <div class="row"><div class="lbl">Prompt</div><span class="mono">“State the code from the RECORD line in one short sentence.”</span></div>
-    <div class="row"><div class="lbl">Response</div><span class="good mono">“The code on the RECORD line is CYAN-4821.”</span></div>
-  </div>
-</section>
+  <section id="charts">
+    <div class="section-head">
+      <div>
+        <div class="kicker">Throughput</div>
+        <h2>Speed is the main practical upside</h2>
+        <p class="sub">The numbers are local, single-user, and content-dependent. Prefill is strong; decode is fast for a local 26B-class model.</p>
+      </div>
+    </div>
+    <div class="grid cols2">
+      <div class="chart">
+        <h3>Prefill rate</h3>
+        <div class="bar-row"><span>2k ctx</span><div class="track"><div class="bar" style="width:53%"></div></div><span>~4.5k/s</span></div>
+        <div class="bar-row"><span>8k ctx</span><div class="track"><div class="bar" style="width:100%"></div></div><span>~8.5k/s</span></div>
+        <div class="bar-row"><span>16k ctx</span><div class="track"><div class="bar" style="width:96%"></div></div><span>~8.2k/s</span></div>
+        <p class="note">TTFT examples: 8k prompt about 0.93s; 16k prompt about 1.94s.</p>
+      </div>
+      <div class="chart">
+        <h3>Decode rate</h3>
+        <div class="bar-row"><span>prose</span><div class="track"><div class="bar amber" style="width:100%"></div></div><span>525-575/s</span></div>
+        <div class="bar-row"><span>dense text</span><div class="track"><div class="bar amber" style="width:76%"></div></div><span>~430/s</span></div>
+        <div class="bar-row"><span>short calls</span><div class="track"><div class="bar amber" style="width:35%"></div></div><span>latency bound</span></div>
+        <p class="note">Longer completions amortize fixed request overhead better than short answers.</p>
+      </div>
+    </div>
+  </section>
 
-<!-- 4 RUN IT -->
-<section id="run">
-  <div class="sh"><span class="eyebrow">Run it</span>
-  <h2>To 18k context on one 4090.</h2></div>
-  <p class="sub">Two ready configs. Both set <span class="mono">--max-num-batched-tokens ≥ --max-model-len</span> (single-pass prefill, clean retrieval). fp8 KV gives you more context <i>and</i> faster decode.</p>
-  <div class="grid2">
-    <div>
-      <h3 style="font-size:16px;margin-bottom:9px;font-weight:600">Comfortable — 10k / fp16</h3>
-      <pre class="codeblock" style="font-size:12px">vllm serve … --served-model-name dg-awq \
-  --max-model-len 10000 --max-num-seqs 1 \
-  --gpu-memory-utilization 0.88 \
-  <span class="g">--max-num-batched-tokens 10240</span> \
-  --kv-cache-dtype float16</pre>
+  <section id="examples">
+    <div class="section-head">
+      <div>
+        <div class="kicker">Capability checks</div>
+        <h2>Simple examples</h2>
+        <p class="sub">These are small smoke tests, included to show API shape rather than to claim a full benchmark.</p>
+      </div>
     </div>
-    <div>
-      <h3 style="font-size:16px;margin-bottom:9px;font-weight:600">Max context — 18k / fp8</h3>
-      <pre class="codeblock" style="font-size:12px">vllm serve … --served-model-name dg-awq \
-  --max-model-len 18000 --max-num-seqs 1 \
-  --gpu-memory-utilization 0.90 \
-  <span class="g">--max-num-batched-tokens 18432</span> \
-  <span class="flag">--kv-cache-dtype fp8</span></pre>
+    <div class="card">
+      <div class="sample">
+        <div class="sample-name">JSON output</div>
+        <div class="sample-body">{ "incident_code": "CYAN-4821", "severity": "high", "actions": ["isolate pump B", "notify operations", "inspect coolant line"] }</div>
+      </div>
+      <div class="sample">
+        <div class="sample-name">Tool call</div>
+        <div class="sample-body">get_sensor_window({ "asset_id": "PUMP-B", "start_minute": 120, "end_minute": 180 })</div>
+      </div>
+      <div class="sample">
+        <div class="sample-name">Tool result</div>
+        <div class="sample-body">Asset PUMP-B reached critical status with max_temp_c 87.3 and three over-limit minutes.</div>
+      </div>
+      <div class="sample">
+        <div class="sample-name">Code sample</div>
+        <div class="sample-body">Generated a compact Python <code>rolling_zscore(values, window)</code> function; the extracted code compiled and defined the expected function.</div>
+      </div>
     </div>
-  </div>
-  <div class="grid2" style="margin-top:18px">
-    <div>
-      <h3 style="font-size:16px;margin-bottom:9px;font-weight:600">Call it</h3>
-      <pre class="codeblock" style="font-size:12px">curl localhost:8001/v1/chat/completions -d '{
-  "model": "dg-awq",
-  "messages": [{"role":"user","content":
-    "<span class="flag">...thousands of tokens of context...</span>
-     One line is a RECORD with a code.
-     State that code in one short sentence."}],
-  "temperature": 0, "max_tokens": 60 }'</pre>
-    </div>
-    <div style="display:flex;flex-direction:column;justify-content:center">
-      <div class="callout" style="margin:0"><b>fp8 isn't a tax.</b> Half-size KV cache costs <b>no measurable decode speed</b> vs fp16 (both ~525–575 tok/s) and no retrieval-quality loss — it just buys you more context (8k → 18k on a 24 GB card). Use it whenever you want headroom.</div>
-    </div>
-  </div>
-</section>
+  </section>
 
+  <section id="use">
+    <div class="section-head">
+      <div>
+        <div class="kicker">Use it for</div>
+        <h2>Good fits and limits</h2>
+      </div>
+    </div>
+    <div class="grid cols3">
+      <div class="card">
+        <span class="tag">good fit</span>
+        <h3>Fast local generation</h3>
+        <p>Drafting, summarization, structured transformations, and code snippets where high local token throughput matters.</p>
+      </div>
+      <div class="card">
+        <span class="tag">good fit</span>
+        <h3>Compact data windows</h3>
+        <p>Sequential logs or time-series windows where the important semantic unit fits in a short canvas and the answer can be validated.</p>
+      </div>
+      <div class="card">
+        <span class="tag">keep checking</span>
+        <h3>Exact long-context extraction</h3>
+        <p>The corrected serving config fixes the previous dead-zone artifact, but production extraction should still use schemas, checksums, or verification passes.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="run">
+    <div class="section-head">
+      <div>
+        <div class="kicker">Run it</div>
+        <h2>Docker setup</h2>
+        <p class="sub">Use the Gemma diffusion vLLM image. Let vLLM auto-detect the compressed-tensors INT4 checkpoint. The important serving flag is <code>--max-num-batched-tokens</code>.</p>
+      </div>
+    </div>
+
+    <div class="grid cols2">
+      <div>
+        <h3>Download the model</h3>
+        <pre>pip install -U huggingface_hub
+
+huggingface-cli download \
+  cyankiwi/diffusiongemma-26B-A4B-it-AWQ-INT4 \
+  --local-dir ./diffusiongemma-26B-A4B-it-AWQ-INT4</pre>
+      </div>
+      <div class="callout">
+        <strong>Do not pass AWQ flags.</strong> This checkpoint is compressed-tensors INT4, not AutoAWQ. Use <code>vllm/vllm-openai:gemma</code> and do not pass <code>--quantization awq_marlin</code>.
+      </div>
+    </div>
+
+    <h3 style="margin:26px 0 12px">Startup string: 10k context, fp16 KV</h3>
+    <pre>MODEL_DIR=$PWD/diffusiongemma-26B-A4B-it-AWQ-INT4
+
+docker run -d --name dg-10k --gpus all --ipc=host \
+  -e PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
+  -v "$MODEL_DIR":/model:ro -p 8001:8000 \
+  vllm/vllm-openai:gemma \
+    --model /model --served-model-name dg-awq \
+    --max-model-len 10000 --max-num-seqs 1 \
+    --gpu-memory-utilization 0.88 \
+    --max-num-batched-tokens 10240 \
+    --kv-cache-dtype float16 \
+    --host 0.0.0.0 --port 8000 \
+    --enable-auto-tool-choice \
+    --tool-call-parser gemma4 \
+    --reasoning-parser gemma4</pre>
+
+    <h3 style="margin:26px 0 12px">Startup string: 18k context, fp8 KV</h3>
+    <pre>MODEL_DIR=$PWD/diffusiongemma-26B-A4B-it-AWQ-INT4
+
+docker run -d --name dg-18k --gpus all --ipc=host \
+  -e PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
+  -v "$MODEL_DIR":/model:ro -p 8001:8000 \
+  vllm/vllm-openai:gemma \
+    --model /model --served-model-name dg-awq \
+    --max-model-len 18000 --max-num-seqs 1 \
+    --gpu-memory-utilization 0.90 \
+    --max-num-batched-tokens 18432 \
+    --kv-cache-dtype fp8 \
+    --host 0.0.0.0 --port 8000 \
+    --enable-auto-tool-choice \
+    --tool-call-parser gemma4 \
+    --reasoning-parser gemma4</pre>
+
+    <div class="callout" style="margin-top:18px">
+      <strong>Check the compile range.</strong> For the 18k command, logs should include <code>compile_ranges_endpoints: [18432]</code>. For the 8k baseline, use <code>--max-model-len 8000</code>, <code>--max-num-batched-tokens 8192</code>, and fp16 KV.
+    </div>
+
+    <h3 style="margin:26px 0 12px">Verify and call it</h3>
+    <pre>until curl -sf localhost:8001/health; do sleep 5; done
+docker logs dg-18k 2&gt;&amp;1 | grep compile_ranges
+curl -s localhost:8001/v1/models
+
+curl -s localhost:8001/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model":"dg-awq",
+    "messages":[{"role":"user","content":"State one practical use for block diffusion text generation."}],
+    "temperature":0,
+    "max_tokens":80
+  }'</pre>
+  </section>
 </main>
 
-<footer><div class="wrap">
-  <span class="eyebrow" style="color:var(--ink2)">Measured</span>
-  <p style="margin:14px 0 0;max-width:780px">All figures measured locally against vLLM on an RTX 4090
-  (<code>dg-awq</code>, AWQ/compressed-tensors INT4, <code>max-model-len 8000</code>, single-user), 6–10 trials per point, confirmed by reading raw model outputs.</p>
-</div></footer>
-
-<script>
-const $=(s,r=document)=>r.querySelector(s);
-const NS="http://www.w3.org/2000/svg";
-function el(t,a={}){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
-function tx(x,y,s,o={}){const t=el("text",{x,y,"font-family":"JetBrains Mono, monospace","font-size":o.fs||11,fill:o.fill||C.ink2,"text-anchor":o.a||"middle"});if(o.w)t.setAttribute("font-weight",o.w);t.textContent=s;return t;}
-const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
-const C={ink:"#13181A",ink2:"#586168",green:"#0CA678",grid:"rgba(19,24,26,.08)"};
-const DATA={
-  retr:[{d:250,p:100},{d:500,p:100},{d:750,p:100},{d:1000,p:100},{d:1250,p:100},{d:1500,p:100},{d:2000,p:100},{d:2750,p:100},{d:3500,p:100},{d:5000,p:100},{d:6500,p:100}],
-  coh:[{kv:9,c:100},{kv:15,c:100},{kv:27,c:100},{kv:52,c:100},{kv:78,c:100},{kv:92,c:100}]
-};
-function lineChart(mount,data,opts){
-  const W=opts.W||940,H=opts.H||300,pl=46,pr=18,pt=22,pb=44;
-  const x=v=>pl+(v/opts.xmax)*(W-pl-pr), y=v=>pt+(1-v/100)*(H-pt-pb);
-  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%",preserveAspectRatio:"xMidYMid meet"});
-  for(let g=0;g<=100;g+=25){const yy=y(g);
-    svg.appendChild(el("line",{x1:pl,y1:yy,x2:W-pr,y2:yy,stroke:C.grid}));
-    svg.appendChild(tx(pl-9,yy+4,g+"%",{a:"end"}));}
-  (opts.xticks||[]).forEach(v=>svg.appendChild(tx(x(v),H-15,v,{})));
-  if(opts.xlabel) svg.appendChild(tx(W/2,H-1,opts.xlabel,{}));
-  const pts=data.map(p=>[x(p[0]),y(p[1])]);
-  svg.appendChild(el("path",{d:"M"+pts.map(p=>p.join(",")).join(" L")+` L${x(data[data.length-1][0])},${y(0)} L${x(data[0][0])},${y(0)} Z`,fill:"rgba(12,166,120,.10)"}));
-  const path=el("path",{d:"M"+pts.map(p=>p.join(",")).join(" L"),fill:"none",stroke:C.green,"stroke-width":3,"stroke-linejoin":"round","stroke-linecap":"round"});
-  svg.appendChild(path);
-  data.forEach(p=>svg.appendChild(el("circle",{cx:x(p[0]),cy:y(p[1]),r:4,fill:C.green,stroke:"#fff","stroke-width":1.5})));
-  const tag=el("text",{x:x(opts.xmax*0.5),y:y(100)+22,"text-anchor":"middle",fill:C.green,"font-family":"Sora, sans-serif","font-size":13,"font-weight":700});
-  tag.textContent=opts.tag||"100% — every position";svg.appendChild(tag);
-  mount.appendChild(svg);
-  if(!reduce){const L=path.getTotalLength();path.style.strokeDasharray=L;path.style.strokeDashoffset=L;
-    path.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:1400,easing:"cubic-bezier(.4,.1,.2,1)",fill:"forwards"});}
-}
-lineChart($("#retr"),DATA.retr.map(p=>[p.d,p.p]),{xmax:6800,xticks:[250,1000,2000,3500,5000,6500],xlabel:"how far the fact sits from the question (tokens) →"});
-lineChart($("#retr2"),DATA.retr.map(p=>[p.d,p.p]),{W:460,H:240,xmax:6800,xticks:[250,2000,4000,6500],xlabel:"distance from question →",tag:"flat 100%"});
-lineChart($("#coh"),DATA.coh.map(p=>[p.kv,p.c]),{W:460,H:240,xmax:100,xticks:[9,27,52,78,92],xlabel:"context fill (%) →",tag:"flat — quality holds"});
-</script>
+<footer>
+  <div class="wrap">
+    Measured locally on June 20, 2026 against <code>dg-awq</code> on an RTX 4090 via vLLM. The 8k retrieval figure comes from the clean fp16-KV baseline; the 18k retrieval figure is a smaller fp8-KV spot check on the current server. Treat exact-value workflows as validation problems, not just generation problems.
+  </div>
+</footer>
 </body>
 </html>
