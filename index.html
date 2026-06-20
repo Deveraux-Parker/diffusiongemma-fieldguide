@@ -208,15 +208,15 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
       </div>
     </div>
     <div class="panel">
-      <h3 style="font-size:17px;margin-bottom:4px">When it misses, it doesn’t say so</h3>
-      <p class="muted" style="font-size:15px;margin:0 0 14px">In the dead zone it returns a confident wrong answer — a timestamp lifted from a neighbouring line, or a mangled fragment of the real code:</p>
-      <div class="mono" style="font-size:13.5px;line-height:2.1">
-        <div><span class="muted">wanted</span> <span class="t-good">INDIGO-5565</span> &nbsp;→&nbsp; <span class="t-bad">“IGO-5565”</span></div>
-        <div><span class="muted">wanted</span> <span class="t-good">JADE-2218</span> &nbsp;→&nbsp; <span class="t-bad">“J-221”</span></div>
-        <div><span class="muted">wanted</span> <span class="t-good">CRIMSON-3626</span> &nbsp;→&nbsp; <span class="t-bad">“90002”</span></div>
-        <div><span class="muted">wanted</span> <span class="t-good">CYAN-9773</span> &nbsp;→&nbsp; <span class="t-bad">“90004”</span></div>
+      <h3 style="font-size:17px;margin-bottom:4px">It doesn’t miss — it makes things up</h3>
+      <p class="muted" style="font-size:15px;margin:0 0 14px">We asked for individual fields of a record stranded in the dead zone. It never said “not found” — it confabulated a plausible value from its priors, every time:</p>
+      <div class="mono" style="font-size:13px;line-height:1.9">
+        <div><span class="muted">asked its temp (really 87.3°C)</span> &nbsp;→&nbsp; <span class="t-bad">“21.90°C”</span> <span class="muted">a normal reading</span></div>
+        <div><span class="muted">asked its code colour</span> &nbsp;→&nbsp; <span class="t-bad">“green”</span> <span class="muted">not even in the set</span></div>
+        <div><span class="muted">asked the exact code</span> &nbsp;→&nbsp; <span class="t-bad">“90002”</span> <span class="muted">a neighbour’s timestamp</span></div>
       </div>
-      <div class="callout warn" style="margin-top:20px"><b>Watch out:</b> dead-zone errors are silent. Don’t trust a bare value pulled from the middle of a long prompt — have it quote the surrounding line so you can verify.</div>
+      <p class="muted" style="font-size:14px;margin:14px 0 0">A weak “something critical is here” gist survives ~7/10 of the time — but <b style="color:#C5CBDA">no specific field can be read</b>, even a 1-of-6 colour. The same record in a safe zone: 10/10.</p>
+      <div class="callout warn" style="margin-top:18px"><b>Watch out:</b> dead-zone errors are fluent, confident, and wrong — the most dangerous kind. Never trust a value pulled from the middle of a long prompt without a checksum or source-quote to verify it.</div>
     </div>
   </div>
 </section>
@@ -296,10 +296,11 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
 
   <div class="panel">
     <div id="mitig" class="chartbox"></div>
-    <div class="callout"><b>Why:</b> the dead zone is a gap in what the model’s attention reaches, not a matter of emphasis.
-      Three stacked copies are still in the gap. One copy at the top, or just before your question, lands where the model is looking.</div>
-    <div class="callout warn" style="margin-top:14px"><b>The tactic:</b> when a critical fact sits mid-prompt, echo it into a header at the top
-      <i>or</i> into the line right before your question. Repeating it in place is wasted effort.</div>
+    <div class="callout"><b>Why:</b> the dead zone isn’t weak emphasis — it’s a region the model can’t <i>bind</i> values from, so it confabulates instead.
+      Three stacked copies are all still unreadable. One copy at the top, or just before your question, lands where the model can actually read it.</div>
+    <div class="callout warn" style="margin-top:14px"><b>The pattern that works:</b> keep the full record wherever it naturally lives, and put a <b>compact index</b> — just the key and its value —
+      in a safe zone (a header at the top <i>or</i> the line right before your question). For exact IDs, carry a <b>checksum</b> and reject any answer that doesn’t match.
+      Don’t waste tokens repeating the full payload inside the dead band.</div>
   </div>
 </section>
 
@@ -332,9 +333,10 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
   <span class="eyebrow" style="color:var(--muted)">Methodology</span>
   <p style="margin:14px 0 0;max-width:760px">All figures measured locally against a running vLLM server
   (<code>dg-awq</code>, AWQ/compressed-tensors INT4, RTX 4090, <code>max_model_len 8000</code>, single-user).
-  Each data point is 5–8 trials; every headline was confirmed by reading raw model outputs, not just aggregate scores.
-  Full report and reproducible harnesses live in <code>DIFFBENCH/</code> —
-  <code>bench_kv.py</code>, <code>bench_coherence.py</code>, <code>bench_quirks.py</code>, <code>bench_wave2.py</code>, and <code>REPORT.md</code>.</p>
+  Each data point is 5–10 trials; every headline was confirmed by reading raw model outputs, not just aggregate scores.
+  The dead-zone mitigation and binding-vs-coverage results come from a hardened harness suite (timestamped runs,
+  per-trial raw logs, miss-type categorization, Wilson confidence intervals). Full report and reproducible
+  harnesses live in <code>DIFFBENCH/</code> and <code>NEWBENCH/</code> alongside <code>REPORT.md</code>.</p>
 </div></footer>
 
 <script>
