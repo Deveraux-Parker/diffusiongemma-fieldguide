@@ -29,7 +29,6 @@ h1,h2,h3{font-family:var(--disp);font-weight:600;letter-spacing:-.02em;line-heig
 .muted{color:var(--muted)}
 .mono{font-family:var(--mono)}
 
-/* ---------- noise field hero ---------- */
 .hero{position:relative;padding:104px 0 64px;overflow:hidden}
 .hero canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.5;z-index:0}
 .hero .wrap{position:relative;z-index:1}
@@ -39,34 +38,30 @@ h1,h2,h3{font-family:var(--disp);font-weight:600;letter-spacing:-.02em;line-heig
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 h1.title{font-size:clamp(40px,7vw,82px);font-weight:700;margin:0 0 22px}
 h1.title .v{color:var(--crimson)}
-.lede{font-size:clamp(18px,2.4vw,23px);color:#C5CBDA;max-width:660px;margin:0 0 8px}
+.lede{font-size:clamp(18px,2.4vw,23px);color:#C5CBDA;max-width:680px;margin:0 0 8px}
 .lede b{color:var(--ink);font-weight:600}
 
-/* hero chart */
 .heroChart{margin:44px 0 0;background:linear-gradient(180deg,rgba(18,22,38,.7),rgba(10,13,22,.4));
   border:1px solid var(--hair);border-radius:16px;padding:26px 24px 18px;backdrop-filter:blur(3px)}
 .heroChart .cap{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:10px}
 .heroChart .cap b{font-family:var(--disp);font-size:18px;font-weight:600}
 
-/* ---------- stat strip ---------- */
 .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:30px 0 0}
 .stat{background:var(--panel);border:1px solid var(--hair);border-radius:13px;padding:18px 16px}
 .stat .n{font-family:var(--disp);font-size:30px;font-weight:700;letter-spacing:-.02em}
 .stat .l{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-top:4px;text-transform:uppercase}
 .stat.good .n{color:var(--cyan)} .stat.warn .n{color:var(--amber)} .stat.bad .n{color:var(--crimson)}
 
-/* ---------- sections ---------- */
 section{padding:74px 0;border-top:1px solid var(--grid)}
 .sh{display:flex;gap:16px;align-items:baseline;margin-bottom:8px}
 .sh .idx{font-family:var(--mono);font-size:13px;color:var(--violet);font-weight:500;padding-top:6px}
 h2{font-size:clamp(27px,4vw,40px)}
-.sub{color:var(--muted);max-width:680px;margin:14px 0 36px;font-size:18px}
+.sub{color:var(--muted);max-width:700px;margin:14px 0 36px;font-size:18px}
 
 .panel{background:var(--panel);border:1px solid var(--hair);border-radius:16px;padding:28px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 
-/* terse compare */
 .bars{display:flex;flex-direction:column;gap:18px;margin-top:6px}
 .barrow .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
 .barrow .top .name{font-family:var(--mono);font-size:14px}
@@ -82,14 +77,6 @@ h2{font-size:clamp(27px,4vw,40px)}
 .callout.warn{border-color:var(--amber);background:rgba(246,169,59,.06)}
 .callout.warn b{color:var(--amber)}
 
-/* heatmap */
-.heat{display:grid;grid-template-columns:auto repeat(7,1fr);gap:6px;margin-top:8px;font-family:var(--mono);font-size:12px}
-.heat .hd{color:var(--muted);display:flex;align-items:center;justify-content:center;padding:4px 0}
-.heat .rl{color:var(--muted);display:flex;align-items:center;padding-right:10px;white-space:nowrap}
-.cell{aspect-ratio:1.7;border-radius:6px;display:flex;align-items:center;justify-content:center;
-  font-weight:600;color:#08101A}
-
-/* quirk cards */
 .qcard{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:22px}
 .qcard .tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
 .qcard h3{font-size:19px;margin:11px 0 8px}
@@ -97,7 +84,10 @@ h2{font-size:clamp(27px,4vw,40px)}
 .qcard .metric{font-family:var(--disp);font-size:26px;font-weight:700;margin-top:14px}
 .t-good{color:var(--cyan)} .t-warn{color:var(--amber)} .t-bad{color:var(--crimson)} .t-violet{color:var(--violet)}
 
-/* cheatsheet */
+.codeblock{font-family:var(--mono);font-size:13px;line-height:1.7;background:var(--bg2);
+  border:1px solid var(--hair);border-radius:11px;padding:18px 20px;margin-top:6px;overflow-x:auto;white-space:pre;color:#C5CBDA}
+.codeblock .c{color:var(--faint)} .codeblock .k{color:var(--cyan)} .codeblock .q{color:var(--amber)}
+
 .rules{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
 .rule{display:flex;gap:14px;background:var(--panel);border:1px solid var(--hair);border-radius:12px;padding:18px 20px}
 .rule .mk{font-family:var(--disp);font-weight:700;font-size:20px;line-height:1}
@@ -105,20 +95,15 @@ h2{font-size:clamp(27px,4vw,40px)}
 .rule p{margin:0;font-size:15px}
 .rule .h{font-family:var(--mono);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
 
-/* svg chart shells */
 .chartbox .ax{font-family:var(--mono);font-size:11px;fill:var(--muted)}
 .chartbox .gl{stroke:var(--grid);stroke-width:1}
 figcaption{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:12px;text-align:center}
 
 footer{padding:60px 0 80px;border-top:1px solid var(--grid);color:var(--muted);font-size:14px}
 footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);padding:2px 7px;border-radius:5px;font-size:13px}
-.legend{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:14px}
-.legend span{display:inline-flex;align-items:center;gap:7px}
-.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
 
 @media(max-width:860px){
   .stats{grid-template-columns:repeat(2,1fr)} .grid2,.grid3,.rules{grid-template-columns:1fr}
-  .heat{font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
@@ -134,39 +119,37 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
     <div class="kicker"><span class="dot"></span>
       <span class="eyebrow">DiffusionGemma-26B-A4B · block-diffusion · RTX 4090 · DIFFBENCH</span></div>
     <h1 class="title">It reads brilliantly<br>— until the fact falls<br>into the <span class="v">valley</span>.</h1>
-    <p class="lede">A block-diffusion model that denoises a 256-token canvas instead of writing left-to-right.
-      That one architectural fact reshapes everything: <b>where you put information matters more than how much you give it.</b></p>
+    <p class="lede">A model that denoises a 256-token canvas instead of writing left-to-right. The consequence runs through everything we measured:
+      <b>where you put a fact matters more than how much context you give it</b> — and “where” turns out to be stranger than it looks.</p>
 
     <figure class="heroChart chartbox">
       <div class="cap">
         <b>Can it find a fact, by how far that fact sits from your question?</b>
-        <span class="mono muted">fill ≈ 5.8k tokens · 5 trials/point</span>
+        <span class="mono muted">at one ~5.8k-token prompt · 5 trials/point</span>
       </div>
       <div id="valley"></div>
-      <figcaption>Retrieval accuracy vs. distance from the question, <b>at one ~5.8k-token prompt</b>. The valley is real — but its position shifts with prompt length (see §03).</figcaption>
+      <figcaption>The first thing we saw: a clean valley. It’s real — but §03 shows the valley <b>moves with prompt length</b>, so this is a slice, not a law.</figcaption>
     </figure>
 
     <div class="stats">
-      <div class="stat good"><div class="n">~100%</div><div class="l">front-loaded recall to 95% context</div></div>
+      <div class="stat good"><div class="n">~100%</div><div class="l">recall from the safe zones</div></div>
       <div class="stat good"><div class="n">5/5</div><div class="l">coherence held to 92% fill</div></div>
       <div class="stat good"><div class="n">8/8</div><div class="l">valid strict JSON</div></div>
       <div class="stat bad"><div class="n">7/8</div><div class="l">empty replies on terse prompts</div></div>
-      <div class="stat warn"><div class="n">1/8</div><div class="l">hallucinates when answer absent</div></div>
+      <div class="stat warn"><div class="n">0/8</div><div class="l">read from a dead-zone position</div></div>
     </div>
   </div>
 </header>
 
 <main class="wrap">
 
-<!-- 1. THE ONE RULE -->
+<!-- 01 THE ONE RULE -->
 <section id="rule">
   <div class="sh"><span class="idx">01</span><div>
     <span class="eyebrow">The single most useful thing we found</span>
     <h2>Never ask it for a one-word answer.</h2></div></div>
-  <p class="sub">Ask “reply with <i>only</i> the number” and the denoiser often stops at nothing —
-    it returns an empty string. Ask the exact same question as a short sentence and it answers correctly almost every time.
-    This one quirk was masquerading as “bad at counting.”</p>
-
+  <p class="sub">Ask “reply with <i>only</i> the number” and the denoiser often stops at nothing — it returns an empty string.
+    Ask the exact same question as a short sentence and it answers correctly almost every time. This one quirk was masquerading as “bad at counting.”</p>
   <div class="panel">
     <div class="bars">
       <div class="barrow">
@@ -182,81 +165,62 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
         <div class="track"><div class="fill" data-w="12.5" style="background:var(--amber)"></div></div>
       </div>
     </div>
-    <div class="callout"><b>Do this:</b> ask for a short sentence and parse the value out yourself.
-      The model can count, compute a maximum, and find a threshold-crossing perfectly — it just won’t hand you a bare token.</div>
+    <div class="callout"><b>Do this:</b> ask for a short sentence (or JSON) and parse the value yourself. The model can count, take a maximum, and find a threshold-crossing perfectly — it just won’t hand you a bare token.</div>
   </div>
 </section>
 
-<!-- 2. THE VALLEY / WHERE TO PUT DATA -->
-<section id="valley-sec">
+<!-- 02 POSITION + CONFABULATION -->
+<section id="position">
   <div class="sh"><span class="idx">02</span><div>
-    <span class="eyebrow">Where to put the information that matters</span>
-    <h2>Two safe zones, one dead zone in between.</h2></div></div>
-  <p class="sub">The model uses sliding-window attention (window ≈ 1024 tokens) with full attention only every sixth layer.
-    Two zones are reliable: facts <b>near the very start</b> (primacy) and facts <b>right before the question</b> (recency).
-    In between, a fact can be lost — and as the next section shows, <i>where</i> it’s lost depends on the prompt’s length, not a fixed distance.</p>
-
-  <div class="grid2">
-    <div class="panel">
-      <h3 style="font-size:17px;margin-bottom:4px">Position map at a full (76%) context</h3>
-      <p class="muted mono" style="font-size:12px;margin:0 0 16px">Exp B · cells = successful retrievals out of 5</p>
-      <div class="heat" id="heat"></div>
-      <div class="legend">
-        <span><i style="background:var(--cyan)"></i>found 5/5</span>
-        <span><i style="background:var(--amber)"></i>partial</span>
-        <span><i style="background:var(--crimson)"></i>lost 0/5</span>
-      </div>
+    <span class="eyebrow">Where it reads, and where it lies</span>
+    <h2>Two zones you can trust — and a middle that makes things up.</h2></div></div>
+  <p class="sub">The model uses sliding-window attention (window ≈ 1024 tokens) with full attention only every sixth layer. Two regions stay reliable:
+    facts <b>near the very start</b> (primacy) and facts <b>in the last few hundred tokens</b> before the question (recency).
+    A fact in between can be lost — and it doesn’t fail honestly. It confabulates.</p>
+  <div class="panel">
+    <h3 style="font-size:18px;margin-bottom:4px">We asked for fields of a record stranded in the middle</h3>
+    <p class="muted" style="font-size:15px;margin:6px 0 16px">It never said “not found.” It filled each slot with a plausible value from its priors — every time:</p>
+    <div class="mono" style="font-size:13.5px;line-height:1.95">
+      <div><span class="muted">its temperature (really 87.3°C)</span> &nbsp;→&nbsp; <span class="t-bad">“21.90°C”</span> <span class="muted">a normal reading</span></div>
+      <div><span class="muted">its code colour</span> &nbsp;→&nbsp; <span class="t-bad">“green”</span> <span class="muted">not even in the set</span></div>
+      <div><span class="muted">the exact code</span> &nbsp;→&nbsp; <span class="t-bad">“90002”</span> <span class="muted">a neighbour’s timestamp</span></div>
     </div>
-    <div class="panel">
-      <h3 style="font-size:17px;margin-bottom:4px">It doesn’t miss — it makes things up</h3>
-      <p class="muted" style="font-size:15px;margin:0 0 14px">We asked for individual fields of a record stranded in the dead zone. It never said “not found” — it confabulated a plausible value from its priors, every time:</p>
-      <div class="mono" style="font-size:13px;line-height:1.9">
-        <div><span class="muted">asked its temp (really 87.3°C)</span> &nbsp;→&nbsp; <span class="t-bad">“21.90°C”</span> <span class="muted">a normal reading</span></div>
-        <div><span class="muted">asked its code colour</span> &nbsp;→&nbsp; <span class="t-bad">“green”</span> <span class="muted">not even in the set</span></div>
-        <div><span class="muted">asked the exact code</span> &nbsp;→&nbsp; <span class="t-bad">“90002”</span> <span class="muted">a neighbour’s timestamp</span></div>
-      </div>
-      <p class="muted" style="font-size:14px;margin:14px 0 0">A weak “something critical is here” gist survives ~7/10 of the time — but <b style="color:#C5CBDA">no specific field can be read</b>, even a 1-of-6 colour. The same record in a safe zone: 10/10.</p>
-      <div class="callout warn" style="margin-top:18px"><b>Watch out:</b> dead-zone errors are fluent, confident, and wrong — the most dangerous kind. Never trust a value pulled from the middle of a long prompt without a checksum or source-quote to verify it.</div>
-    </div>
+    <p class="muted" style="font-size:14px;margin:14px 0 0">A weak “something critical is here” gist survives ~7/10 of the time — but <b style="color:#C5CBDA">no specific field can be read</b>,
+      not even a 1-of-6 colour. The same record in a safe zone: <b style="color:var(--cyan)">10/10</b>.</p>
+    <div class="callout warn" style="margin-top:18px"><b>Watch out:</b> middle-of-prompt errors are fluent, confident, and wrong — the most dangerous kind. Never trust a value from the middle of a long prompt without a checksum or source-quote to verify it.</div>
   </div>
 </section>
 
-<!-- 3. THE TWIST: DEAD ZONE MOVES -->
+<!-- 03 THE TWIST -->
 <section id="twist">
   <div class="sh"><span class="idx">03</span><div>
     <span class="eyebrow">The plot twist</span>
     <h2>The dead zone isn’t a distance. It moves with length.</h2></div></div>
-  <p class="sub">We expected the dead zone to sit a fixed distance before the question. It doesn’t.
-    Hold a fact at <b>exactly 1000 tokens from the question</b> and change only the prompt’s total length,
-    and retrieval flips on and off — perfect, gone, perfect, gone:</p>
-
+  <p class="sub">We assumed the dead zone sat a fixed distance before the question. It doesn’t. Pin a fact at <b>exactly 1000 tokens from the question</b>
+    and change only the prompt’s total length — retrieval flips on and off: perfect, gone, perfect, gone.</p>
   <div class="panel">
     <div id="osc" class="chartbox"></div>
-    <div class="callout"><b>What this means:</b> the failure is tied to a fact’s <b>absolute position</b> in the prompt — there are
-      recurring “bad bands” (roughly every ~1900 tokens) where binding fails, likely from block-aligned sparse attention.
-      The same fact, the same distance from your question, is readable at one length and lost at another.</div>
-    <div class="callout warn" style="margin-top:14px"><b>So the only safe move</b> is to stop trying to pick a safe distance in the middle.
-      Put must-retrieve facts at the <b>very start</b> or in the <b>last few hundred tokens</b> before the question — the two zones that hold at every length.
-      <span class="muted">(My earlier “dead zone = 600–1500 tokens” was this band measured at a single ~5.8k prompt, and over-generalized — corrected here.)</span></div>
+    <div class="callout"><b>What this means:</b> the failure is tied to a fact’s <b>absolute position</b> in the prompt — recurring “bad bands” (roughly every ~1900 tokens),
+      most likely from block-aligned sparse attention. The same fact, the same distance from your question, is readable at one length and lost at another. Needle content (we tested adding a checksum) makes no difference.</div>
+    <div class="callout warn" style="margin-top:14px"><b>So stop trying to pick a safe distance.</b> Only two positions hold at <i>every</i> length: the very start, and the last few hundred tokens before the question.
+      <span class="muted">(An earlier version of this page called it a fixed “600–1500 tokens” band — that was this effect measured at a single prompt length, and over-generalized. Corrected here.)</span></div>
   </div>
 </section>
 
-<!-- 4. WHAT IT'S GREAT AT -->
+<!-- 04 STRENGTHS -->
 <section id="strengths">
   <div class="sh"><span class="idx">04</span><div>
     <span class="eyebrow">Its real strengths</span>
-    <h2>Front-load it, and a full context barely costs you anything.</h2></div></div>
-  <p class="sub">When the important information sits up front, generation quality is flat across the entire context range —
-    a packed prompt produces the same clean, complete answer as an empty one. It only gets slower, not worse.</p>
-
+    <h2>Front-load it, and a full context costs you almost nothing.</h2></div></div>
+  <p class="sub">When the important information is up front, generation quality is flat across the entire context range — a packed prompt produces the same clean, complete answer as an empty one. It only gets slower, not worse.</p>
   <div class="grid2">
     <div class="panel chartbox">
       <div class="cap" style="display:flex;justify-content:space-between;margin-bottom:6px">
         <b style="font-family:var(--disp);font-size:17px">Coherence vs. how full the context is</b></div>
       <div id="coh"></div>
-      <figcaption>Exp D · structured-summary quality, spec front-loaded · 0–92% context fill</figcaption>
+      <figcaption>Structured-summary quality, spec front-loaded · 0–92% context fill</figcaption>
     </div>
-    <div class="grid" style="display:grid;grid-template-rows:1fr 1fr;gap:18px">
+    <div style="display:grid;grid-template-rows:1fr 1fr;gap:18px">
       <div class="qcard"><div class="tag t-good">computed retrieval</div>
         <h3>It reasons, not just matches</h3>
         <p>Highest reading, first threshold-crossing, count of anomalies — all correct over a front-loaded series (in sentence form).</p>
@@ -269,13 +233,12 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
   </div>
 </section>
 
-<!-- 5. QUIRKS -->
+<!-- 05 QUIRKS -->
 <section id="quirks">
   <div class="sh"><span class="idx">05</span><div>
     <span class="eyebrow">Quirks worth knowing</span>
     <h2>How a diffusion model behaves differently.</h2></div></div>
   <p class="sub">These aren’t bugs so much as consequences of denoising a whole canvas at once instead of predicting one token at a time.</p>
-
   <div class="grid3">
     <div class="qcard"><div class="tag t-violet">temperature</div>
       <h3>The temperature knob is nearly inert</h3>
@@ -291,7 +254,7 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
       <div id="canvas" class="chartbox" style="margin-top:14px"></div></div>
     <div class="qcard"><div class="tag t-amber">char-drop under load</div>
       <h3>It can shave a character off a value</h3>
-      <p>Echoing codes in isolation is flawless (20/20). But reading a value out of a <i>full</i> context, it sometimes drops a leading character — <span class="mono t-good">93.7</span>→<span class="mono t-bad">3.7</span>. A retrieval artifact, not quantization.</p>
+      <p>Echoing codes in isolation is flawless (20/20). But reading a value out of a <i>full</i> context it sometimes drops a leading character — <span class="mono t-good">93.7</span>→<span class="mono t-bad">3.7</span>. A retrieval artifact, not quantization.</p>
       <div class="metric"><span class="t-good">20/20</span> <span class="muted" style="font-size:15px">clean echo</span></div></div>
     <div class="qcard"><div class="tag t-amber">honesty</div>
       <h3>Mostly admits when a fact is absent</h3>
@@ -304,46 +267,58 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
   </div>
 </section>
 
-<!-- 6. MITIGATION -->
-<section id="mitigation">
+<!-- 06 THE FIX -->
+<section id="fix">
   <div class="sh"><span class="idx">06</span><div>
-    <span class="eyebrow">Beating the dead zone</span>
-    <h2>You can’t shout louder. You have to move.</h2></div></div>
-  <p class="sub">If a fact has to live in the middle of a long prompt, can you rescue it by repeating it?
-    We buried a fact in the dead zone and tried six ways to recover it.
-    Duplicating it <i>in place</i> — even three copies back-to-back — does nothing.
-    Putting a single copy in a <b>safe zone</b> fixes it completely.</p>
-
+    <span class="eyebrow">The architecture that works</span>
+    <h2>Store in the middle. Answer from the edges.</h2></div></div>
+  <p class="sub">You can’t make the middle readable, so don’t fight it. We ablated nine layouts for a record buried in a dead-zone position.
+    The pattern is sharp: <b>only the strategies that put the actual answer values in a safe zone work</b>.</p>
   <div class="panel">
     <div id="mitig" class="chartbox"></div>
-    <div class="callout"><b>Why:</b> the dead zone isn’t weak emphasis — it’s a region the model can’t <i>bind</i> values from, so it confabulates instead.
-      Three stacked copies are all still unreadable. One copy at the top, or just before your question, lands where the model can actually read it.</div>
-    <div class="callout warn" style="margin-top:14px"><b>The pattern that works:</b> keep the full record wherever it naturally lives, and put a <b>compact index</b> — just the key and its value —
-      in a safe zone (a header at the top <i>or</i> the line right before your question). For exact IDs, carry a <b>checksum</b> and reject any answer that doesn’t match.
-      Don’t waste tokens repeating the full payload inside the dead band.</div>
+    <div class="callout warn"><b>Pointers don’t work.</b> A safe-zone pointer (“the record is window W5624”) returns the right window — then fills the values with
+      <span class="mono t-bad">incident_code: "none"</span>. It can say <i>which</i> record matters but can’t route the model back into the dead zone to read it.</div>
+    <div class="grid2" style="margin-top:22px">
+      <div>
+        <h3 style="font-size:17px;margin-bottom:10px">The layout that hit 8/8</h3>
+        <div class="codeblock"><span class="c"># raw records live anywhere — treat the middle as storage</span>
+RAW RECORDS ...
+  window_id=<span class="k">W1234</span> ... incident_code=<span class="k">RI-12345</span> checksum=<span class="k">RS-99999</span>
+RAW RECORDS ...
+
+<span class="c"># a compact EXACT-VALUE index in a safe zone (top and/or tail)</span>
+RETRIEVAL_INDEX:
+  window_id=<span class="k">W1234</span>; incident_code=<span class="k">RI-12345</span>; checksum=<span class="k">RS-99999</span>
+
+<span class="q">Question:</span> Return JSON from RETRIEVAL_INDEX.</div>
+      </div>
+      <div>
+        <h3 style="font-size:17px;margin-bottom:10px">Why this and not duplication</h3>
+        <p class="muted" style="font-size:15px">A compact exact-value index hits 8/8 at the top <i>or</i> just before the question — and it’s far cheaper than copying the whole payload (which also works, but wastes tokens).</p>
+        <p class="muted" style="font-size:15px;margin-top:12px">Because the failure mode is confident confabulation, carry a <b style="color:var(--ink)">checksum</b> and reject any answer that doesn’t match. Treat the raw middle as <b style="color:var(--ink)">storage</b>; the top/tail index is the model’s <b style="color:var(--ink)">readable retrieval surface</b>.</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- 7. CHEATSHEET -->
+<!-- 07 CHEATSHEET -->
 <section id="cheat">
   <div class="sh"><span class="idx">07</span><div>
     <span class="eyebrow">Putting it to work</span>
     <h2>Six rules that make it reliable.</h2></div></div>
   <div class="rules">
     <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
-      <p>Put must-have facts in the <b>first half</b> of the prompt, or in the <b>last ~500 tokens</b> right before your question.</p></div></div>
-    <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
-      <p>Stuck with a mid-prompt fact? <b>Echo one copy</b> into a top header or just before the question — don’t repeat it in place.</p></div></div>
+      <p>Put must-retrieve <b>values</b> at the very top, or in the last few hundred tokens before your question.</p></div></div>
     <div class="rule dont"><span class="mk">✕</span><div><div class="h">Avoid</div>
-      <p>Don’t bury a critical fact <b>anywhere in the middle</b> of a long prompt — there’s no safe middle distance; it depends on total length.</p></div></div>
+      <p>Don’t bury critical values <b>anywhere in the middle</b> — there’s no safe middle distance; it shifts with total length.</p></div></div>
     <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
-      <p>Ask for answers as a <b>short sentence</b> and parse them — never “reply with only X.”</p></div></div>
+      <p>If a fact lives mid-prompt, add a <b>compact exact-value index</b> (id + value + checksum) in a safe zone.</p></div></div>
     <div class="rule dont"><span class="mk">✕</span><div><div class="h">Avoid</div>
-      <p>Don’t trust a bare value from mid-context, and don’t rely on <b>byte-exact</b> reproducibility.</p></div></div>
+      <p>Don’t use a <b>pointer</b> (“see record X”) — it finds the record but invents the values. Carry the values themselves.</p></div></div>
     <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
-      <p>Lean into its strengths: <b>front-loaded time-series</b>, structured JSON, long coherent single-canvas output.</p></div></div>
+      <p>Ask for a <b>short sentence or JSON</b> and parse it — never “reply with only X.”</p></div></div>
     <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
-      <p>For exact IDs, ask for the value <b>twice</b> or use checksummed codes to survive the char-drop.</p></div></div>
+      <p><b>Validate exact IDs</b> with a checksum or source-quote — the failure mode is confident, fluent confabulation.</p></div></div>
   </div>
 </section>
 
@@ -351,12 +326,11 @@ footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);paddin
 
 <footer><div class="wrap">
   <span class="eyebrow" style="color:var(--muted)">Methodology</span>
-  <p style="margin:14px 0 0;max-width:760px">All figures measured locally against a running vLLM server
+  <p style="margin:14px 0 0;max-width:780px">All figures measured locally against a running vLLM server
   (<code>dg-awq</code>, AWQ/compressed-tensors INT4, RTX 4090, <code>max_model_len 8000</code>, single-user).
-  Each data point is 5–10 trials; every headline was confirmed by reading raw model outputs, not just aggregate scores.
-  The dead-zone mitigation and binding-vs-coverage results come from a hardened harness suite (timestamped runs,
-  per-trial raw logs, miss-type categorization, Wilson confidence intervals). Full report and reproducible
-  harnesses live in <code>DIFFBENCH/</code> and <code>NEWBENCH/</code> alongside <code>REPORT.md</code>.</p>
+  Each data point is 6–10 trials; every headline was confirmed by reading raw model outputs, not just aggregate scores —
+  which is how the dead-zone story got corrected twice as we tested further. Reproducible harnesses (timestamped runs,
+  per-trial raw logs, miss-type categorization, Wilson confidence intervals) live in <code>DIFFBENCH/</code> and <code>NEWBENCH/</code> with the full <code>REPORT.md</code>.</p>
 </div></footer>
 
 <script>
@@ -365,56 +339,43 @@ const NS="http://www.w3.org/2000/svg";
 function el(t,a={}){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* ---------- DATA ---------- */
 const DATA = {
   valley:[ {d:223,h:5},{d:418,h:5},{d:616,h:3},{d:816,h:1},{d:1012,h:0},
            {d:1210,h:0},{d:1525,h:0},{d:2038,h:5},{d:3030,h:5},{d:4015,h:5} ],
   coh:[ {kv:9,c:5},{kv:15,c:5},{kv:27,c:5},{kv:52,c:5},{kv:78,c:5},{kv:92,c:5} ],
-  heat:{ depths:["0.0","0.1","0.25","0.5","0.75","0.9","1.0"],
-         rows:[ {label:"26% full",v:[5,5,5,5,4,5,5]}, {label:"76% full",v:[5,5,5,5,0,0,5]} ] },
   temp:[ {t:"0.0",d:.654},{t:"0.5",d:.703},{t:"1.0",d:.620},{t:"1.5",d:.577},{t:"2.0",d:.684} ],
   canvas:[ {n:128,ms:627},{n:224,ms:679},{n:256,ms:629},{n:288,ms:1200},{n:384,ms:1105},{n:512,ms:1293},{n:640,ms:1350} ],
   osc:[ {f:"4.0k",h:1},{f:"4.3k",h:6},{f:"4.6k",h:6},{f:"4.9k",h:6},{f:"5.2k",h:1},
         {f:"5.5k",h:0},{f:"5.8k",h:0},{f:"6.1k",h:1},{f:"6.4k",h:6},{f:"6.7k",h:6},
         {f:"7.0k",h:6},{f:"7.3k",h:1},{f:"7.6k",h:0} ],
-  mitig:[ {k:"1 copy · dead zone",v:0,ok:false},
-          {k:"2 copies · back-to-back",v:0,ok:false},
-          {k:"3 copies · back-to-back",v:0,ok:false},
-          {k:"+ copy before question",v:8,ok:true},
-          {k:"+ copy at the top",v:8,ok:true},
-          {k:"top + before question",v:8,ok:true} ]
+  mitig:[ {k:"record sits in the dead zone",v:0,ok:false},
+          {k:"duplicate it ×3, still in the dead zone",v:0,ok:false},
+          {k:"a pointer to it, in a safe zone",v:0,ok:false},
+          {k:"its exact values, just before the question",v:8,ok:true},
+          {k:"its exact values, at the very top",v:8,ok:true},
+          {k:"a full copy in a safe zone",v:8,ok:true} ]
 };
 const C={cyan:"#3FE0CC",amber:"#F6A93B",crimson:"#FF5470",violet:"#8B7CF6",muted:"#8A92A8",grid:"rgba(255,255,255,.07)"};
 const cFor=h=> h>=5?C.cyan : h>=3?C.amber : h>=1?"#F67A4B" : C.crimson;
 
-/* ---------- valley line chart (hero) ---------- */
 function drawValley(){
   const W=980,H=300,pl=52,pr=20,pt=24,pb=46;
   const xmax=4200, x=v=>pl+(v/xmax)*(W-pl-pr), y=v=>pt+(1-v/5)*(H-pt-pb);
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%",preserveAspectRatio:"xMidYMid meet"});
-  // dead band
   svg.appendChild(el("rect",{x:x(560),y:pt,width:x(1720)-x(560),height:H-pt-pb,fill:"rgba(255,84,112,.10)"}));
   const dl=el("text",{x:(x(560)+x(1720))/2,y:pt+18,"text-anchor":"middle",fill:C.crimson,
-    "font-family":"IBM Plex Mono, monospace","font-size":12,"letter-spacing":"2"});
-  dl.textContent="DEAD ZONE";svg.appendChild(dl);
-  // gridlines + y labels (0..100%)
+    "font-family":"IBM Plex Mono, monospace","font-size":12,"letter-spacing":"2"});dl.textContent="DEAD ZONE";svg.appendChild(dl);
   for(let g=0;g<=5;g++){const yy=y(g);
-    svg.appendChild(el("line",{x1:pl,y1:yy,x2:W-pr,y2:yy,class:"gl",stroke:C.grid}));
-    const tl=el("text",{x:pl-10,y:yy+4,"text-anchor":"end",class:"ax","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});
+    svg.appendChild(el("line",{x1:pl,y1:yy,x2:W-pr,y2:yy,stroke:C.grid}));
+    const tl=el("text",{x:pl-10,y:yy+4,"text-anchor":"end","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});
     tl.textContent=(g*20)+"%";svg.appendChild(tl);}
-  // x labels
-  [200,1000,2000,3000,4000].forEach(v=>{const tx=el("text",{x:x(v),y:H-16,"text-anchor":"middle",class:"ax","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});tx.textContent=v;svg.appendChild(tx);});
-  const xtitle=el("text",{x:(W)/2,y:H-1,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});
+  [200,1000,2000,3000,4000].forEach(v=>{const tx=el("text",{x:x(v),y:H-16,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});tx.textContent=v;svg.appendChild(tx);});
+  const xtitle=el("text",{x:W/2,y:H-1,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});
   xtitle.textContent="tokens between the fact and your question  →";svg.appendChild(xtitle);
-  // zone labels
   const zr=el("text",{x:x(330),y:pt+18,"text-anchor":"middle",fill:C.cyan,"font-family":"IBM Plex Mono, monospace","font-size":11});zr.textContent="RECENCY";svg.appendChild(zr);
   const zp=el("text",{x:x(3100),y:pt+18,"text-anchor":"middle",fill:C.cyan,"font-family":"IBM Plex Mono, monospace","font-size":11});zp.textContent="PRIMACY";svg.appendChild(zp);
-  // path
   const pts=DATA.valley.map(p=>[x(p.d),y(p.h)]);
-  let dstr="M"+pts.map(p=>p.join(",")).join(" L");
-  const path=el("path",{d:dstr,fill:"none",stroke:C.cyan,"stroke-width":2.6,"stroke-linejoin":"round","stroke-linecap":"round"});
-  svg.appendChild(path);
-  // dots
+  const path=el("path",{d:"M"+pts.map(p=>p.join(",")).join(" L"),fill:"none",stroke:C.cyan,"stroke-width":2.6,"stroke-linejoin":"round","stroke-linecap":"round"});svg.appendChild(path);
   DATA.valley.forEach(p=>{const c=el("circle",{cx:x(p.d),cy:y(p.h),r:5,fill:cFor(p.h),stroke:"#0A0D16","stroke-width":2});
     const tt=el("title");tt.textContent=`${p.d} tokens away → ${p.h}/5 found`;c.appendChild(tt);svg.appendChild(c);});
   $("#valley").appendChild(svg);
@@ -422,7 +383,6 @@ function drawValley(){
     path.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:1700,easing:"cubic-bezier(.4,.1,.2,1)",fill:"forwards"});}
 }
 
-/* ---------- coherence flatline ---------- */
 function drawCoh(){
   const W=460,H=230,pl=46,pr=16,pt=20,pb=40;
   const x=v=>pl+(v/100)*(W-pl-pr), y=v=>pt+(1-v/5)*(H-pt-pb);
@@ -432,56 +392,36 @@ function drawCoh(){
   [9,27,52,78,92].forEach(v=>{const t=el("text",{x:x(v),y:H-14,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":10,fill:C.muted});t.textContent=v+"%";svg.appendChild(t);});
   const xt=el("text",{x:W/2,y:H-1,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":10,fill:C.muted});xt.textContent="context fill →";svg.appendChild(xt);
   const pts=DATA.coh.map(p=>[x(p.kv),y(p.c)]);
-  const area=el("path",{d:"M"+pts.map(p=>p.join(",")).join(" L")+` L${x(92)},${y(0)} L${x(9)},${y(0)} Z`,fill:"rgba(63,224,204,.10)"});svg.appendChild(area);
+  svg.appendChild(el("path",{d:"M"+pts.map(p=>p.join(",")).join(" L")+` L${x(92)},${y(0)} L${x(9)},${y(0)} Z`,fill:"rgba(63,224,204,.10)"}));
   const path=el("path",{d:"M"+pts.map(p=>p.join(",")).join(" L"),fill:"none",stroke:C.cyan,"stroke-width":2.6});svg.appendChild(path);
-  DATA.coh.forEach(p=>{svg.appendChild(el("circle",{cx:x(p.kv),cy:y(p.c),r:4.5,fill:C.cyan,stroke:"#12162","stroke-width":1.5}));});
+  DATA.coh.forEach(p=>{svg.appendChild(el("circle",{cx:x(p.kv),cy:y(p.c),r:4.5,fill:C.cyan,stroke:"#121626","stroke-width":1.5}));});
   const tag=el("text",{x:x(50),y:y(5)-10,"text-anchor":"middle",fill:C.cyan,"font-family":"Space Grotesk, sans-serif","font-size":13,"font-weight":600});tag.textContent="flat at 100%";svg.appendChild(tag);
   $("#coh").appendChild(svg);
   if(!reduce){const L=path.getTotalLength();path.style.strokeDasharray=L;path.style.strokeDashoffset=L;
     path.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:1300,easing:"ease-out",fill:"forwards"});}
 }
 
-/* ---------- heatmap ---------- */
-function drawHeat(){
-  const root=$("#heat");
-  root.appendChild(Object.assign(document.createElement("div"),{className:"hd",textContent:""}));
-  DATA.heat.depths.forEach(d=>root.appendChild(Object.assign(document.createElement("div"),{className:"hd",textContent:d})));
-  DATA.heat.rows.forEach(r=>{
-    root.appendChild(Object.assign(document.createElement("div"),{className:"rl",textContent:r.label}));
-    r.v.forEach(v=>{const c=document.createElement("div");c.className="cell";c.textContent=v;
-      c.style.background=cFor(v);c.title=v+"/5 found";root.appendChild(c);});
-  });
-  const note=document.createElement("div");note.className="hd";note.style.gridColumn="2 / span 7";
-  note.style.justifyContent="space-between";note.style.color=C.muted;note.style.marginTop="2px";
-  note.innerHTML="<span>start of prompt</span><span>just before question →</span>";root.appendChild(note);
-}
-
-/* ---------- temperature bars (inert) ---------- */
 function drawTemp(){
   const W=300,H=150,pb=26,pt=10,pl=10,pr=10,bw=(W-pl-pr)/DATA.temp.length;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
-  const ymax=1.0, y=v=>pt+(1-v/ymax)*(H-pt-pb);
+  const y=v=>pt+(1-v/1.0)*(H-pt-pb);
   svg.appendChild(el("line",{x1:pl,y1:y(0),x2:W-pr,y2:y(0),stroke:C.grid}));
   DATA.temp.forEach((p,i)=>{const bx=pl+i*bw+bw*0.18,bwi=bw*0.64;
-    const r=el("rect",{x:bx,y:y(p.d),width:bwi,height:y(0)-y(p.d),fill:C.violet,opacity:.85,rx:3});svg.appendChild(r);
+    svg.appendChild(el("rect",{x:bx,y:y(p.d),width:bwi,height:y(0)-y(p.d),fill:C.violet,opacity:.85,rx:3}));
     const t=el("text",{x:bx+bwi/2,y:H-9,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":10,fill:C.muted});t.textContent=p.t;svg.appendChild(t);});
-  const tl=el("text",{x:pl,y:y(0)+0,fill:C.muted});
   $("#temp").appendChild(svg);
   const cap=document.createElement("div");cap.style.cssText="font-family:IBM Plex Mono,monospace;font-size:10px;color:#5A6178;text-align:center;margin-top:4px";
   cap.textContent="output spread · temp 0.0 → 2.0 (flat)";$("#temp").appendChild(cap);
 }
 
-/* ---------- canvas latency steps ---------- */
 function drawCanvas(){
   const W=300,H=150,pb=26,pt=12,pl=10,pr=10,bw=(W-pl-pr)/DATA.canvas.length;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
-  const ymax=1450,y=v=>pt+(1-v/ymax)*(H-pt-pb);
+  const y=v=>pt+(1-v/1450)*(H-pt-pb);
   svg.appendChild(el("line",{x1:pl,y1:y(0),x2:W-pr,y2:y(0),stroke:C.grid}));
-  DATA.canvas.forEach((p,i)=>{const bx=pl+i*bw+bw*0.16,bwi=bw*0.68;
-    const col=p.n<=256?C.cyan:C.amber;
+  DATA.canvas.forEach((p,i)=>{const bx=pl+i*bw+bw*0.16,bwi=bw*0.68,col=p.n<=256?C.cyan:C.amber;
     svg.appendChild(el("rect",{x:bx,y:y(p.ms),width:bwi,height:y(0)-y(p.ms),fill:col,opacity:.9,rx:2.5}));
     const t=el("text",{x:bx+bwi/2,y:H-9,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":9,fill:C.muted});t.textContent=p.n;svg.appendChild(t);});
-  // boundary marker between 256 and 288
   const bxLine=pl+3*bw;
   svg.appendChild(el("line",{x1:bxLine,y1:pt-2,x2:bxLine,y2:y(0),stroke:C.crimson,"stroke-width":1,"stroke-dasharray":"3 3",opacity:.7}));
   const bl=el("text",{x:bxLine+4,y:pt+8,fill:C.crimson,"font-family":"IBM Plex Mono, monospace","font-size":9});bl.textContent="256→2nd block";svg.appendChild(bl);
@@ -490,53 +430,23 @@ function drawCanvas(){
   cap.textContent="latency (ms) by forced output length";$("#canvas").appendChild(cap);
 }
 
-/* ---------- hero denoise field ---------- */
-function noiseField(){
-  if(reduce) return;
-  const cv=$("#noise"),ctx=cv.getContext("2d");let w,h,pts;
-  function size(){w=cv.width=cv.offsetWidth;h=cv.height=cv.offsetHeight;
-    pts=Array.from({length:Math.min(90,Math.floor(w/14))},()=>({x:Math.random()*w,y:Math.random()*h,
-      vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18,r:Math.random()*1.6+.4}));}
-  size();addEventListener("resize",size);
-  (function loop(){ctx.clearRect(0,0,w,h);
-    for(const p of pts){p.x+=p.vx;p.y+=p.vy;
-      if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fillStyle="rgba(139,124,246,.5)";ctx.fill();}
-    // faint links
-    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
-      const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=dx*dx+dy*dy;
-      if(d<8000){ctx.strokeStyle="rgba(63,224,204,"+(0.12*(1-d/8000))+")";ctx.lineWidth=.5;
-        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}
-    requestAnimationFrame(loop);})();
-}
-
-/* ---------- bar fills ---------- */
-function fillBars(){document.querySelectorAll(".fill[data-w]").forEach(f=>{
-  const w=f.dataset.w+"%"; if(reduce){f.style.width=w;return;}
-  requestAnimationFrame(()=>{setTimeout(()=>f.style.width=w,120);});});}
-
-/* ---------- oscillation: vertical bars, hit-rate vs fill at fixed distance ---------- */
 function drawOsc(){
   const W=900,H=260,pl=44,pr=16,pt=24,pb=52,n=DATA.osc.length;
   const bw=(W-pl-pr)/n, y=v=>pt+(1-v/6)*(H-pt-pb);
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%",preserveAspectRatio:"xMidYMid meet"});
   for(let g=0;g<=6;g+=3){const yy=y(g);
     svg.appendChild(el("line",{x1:pl,y1:yy,x2:W-pr,y2:yy,stroke:C.grid}));
-    const t=el("text",{x:pl-8,y:yy+4,"text-anchor":"end","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});
-    t.textContent=Math.round(g/6*100)+"%";svg.appendChild(t);}
+    const t=el("text",{x:pl-8,y:yy+4,"text-anchor":"end","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});t.textContent=Math.round(g/6*100)+"%";svg.appendChild(t);}
   DATA.osc.forEach((p,i)=>{const bx=pl+i*bw+bw*0.16,bwi=bw*0.68,ok=p.h>=4;
-    const r=el("rect",{x:bx,y:y(p.h),width:bwi,height:y(0)-y(p.h),rx:3,
-      fill:ok?C.cyan:C.crimson,opacity:ok?.92:.5});
+    const r=el("rect",{x:bx,y:y(p.h),width:bwi,height:y(0)-y(p.h),rx:3,fill:ok?C.cyan:C.crimson,opacity:ok?.92:.5});
     if(p.h===0){r.setAttribute("height",2);r.setAttribute("y",y(0)-2);}
     const tt=el("title");tt.textContent=`${p.f} prompt → ${p.h}/6 found`;r.appendChild(tt);svg.appendChild(r);
-    const t=el("text",{x:bx+bwi/2,y:H-30,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":10,fill:C.muted});
-    t.textContent=p.f;svg.appendChild(t);});
+    const t=el("text",{x:bx+bwi/2,y:H-30,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":10,fill:C.muted});t.textContent=p.f;svg.appendChild(t);});
   const xt=el("text",{x:W/2,y:H-10,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":11.5,fill:"#C5CBDA"});
   xt.textContent="total prompt length  (fact pinned at 1000 tokens from the question the whole time)";svg.appendChild(xt);
   $("#osc").appendChild(svg);
 }
 
-/* ---------- mitigation: horizontal bars (0..8) ---------- */
 function drawMitig(){
   const root=$("#mitig");
   const wrap=document.createElement("div");
@@ -551,18 +461,39 @@ function drawMitig(){
     track.style.cssText="height:26px;background:#070A11;border:1px solid rgba(255,255,255,.10);border-radius:7px;overflow:hidden";
     const fill=document.createElement("div");
     fill.style.cssText=`height:100%;border-radius:6px;background:${m.ok?C.cyan:C.crimson};opacity:${m.ok?'.92':'.45'};width:0;transition:width 1s cubic-bezier(.2,.7,.2,1) ${i*90}ms`;
-    if(m.v===0){fill.style.minWidth="0";}
     track.appendChild(fill);row.appendChild(top);row.appendChild(track);wrap.appendChild(row);
     requestAnimationFrame(()=>setTimeout(()=>fill.style.width=(m.v/8*100||1.5)+"%",80));
   });
   root.appendChild(wrap);
   const cap=document.createElement("div");
-  cap.style.cssText="font-family:IBM Plex Mono,monospace;font-size:11.5px;color:#5A6178;margin-top:14px;display:flex;gap:20px;flex-wrap:wrap";
-  cap.innerHTML='<span>↑ same fact buried ~1000 tokens before the question · 8 trials each</span>';
+  cap.style.cssText="font-family:IBM Plex Mono,monospace;font-size:11.5px;color:#5A6178;margin-top:14px";
+  cap.innerHTML="↑ same fact buried in a dead-zone position · 8 trials each · only the value in a safe zone is readable";
   root.appendChild(cap);
 }
 
-drawValley();drawCoh();drawHeat();drawTemp();drawCanvas();drawOsc();drawMitig();noiseField();fillBars();
+function noiseField(){
+  if(reduce) return;
+  const cv=$("#noise"),ctx=cv.getContext("2d");let w,h,pts;
+  function size(){w=cv.width=cv.offsetWidth;h=cv.height=cv.offsetHeight;
+    pts=Array.from({length:Math.min(90,Math.floor(w/14))},()=>({x:Math.random()*w,y:Math.random()*h,
+      vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18,r:Math.random()*1.6+.4}));}
+  size();addEventListener("resize",size);
+  (function loop(){ctx.clearRect(0,0,w,h);
+    for(const p of pts){p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fillStyle="rgba(139,124,246,.5)";ctx.fill();}
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+      const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=dx*dx+dy*dy;
+      if(d<8000){ctx.strokeStyle="rgba(63,224,204,"+(0.12*(1-d/8000))+")";ctx.lineWidth=.5;
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}
+    requestAnimationFrame(loop);})();
+}
+
+function fillBars(){document.querySelectorAll(".fill[data-w]").forEach(f=>{
+  const w=f.dataset.w+"%"; if(reduce){f.style.width=w;return;}
+  requestAnimationFrame(()=>{setTimeout(()=>f.style.width=w,120);});});}
+
+drawValley();drawCoh();drawTemp();drawCanvas();drawOsc();drawMitig();noiseField();fillBars();
 </script>
 </body>
 </html>

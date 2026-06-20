@@ -302,6 +302,37 @@ prompt grows. Open: pin the exact period and tie it to the attention block size.
 Harnesses: `NEWBENCH/multifill_distance_map_benchmark.py`, `isolate_checksum_fill.py`,
 `fine_fill_sweep.py` (timestamped run dirs with raw.jsonl + summary.md).
 
+---
+
+# Part 6 — Routing index: store in the middle, answer from the edges (NEWBENCH)
+
+`NEWBENCH/routing_index_ablation.py` — record buried in a dead-zone position (fill
+5500, dist ~1000), 9 layouts, 8 reps:
+
+```
+strategy                       hits   note
+baseline (record in dead zone) 0/8    window_only misses
+tail pointer only              0/8    returns right window_id, values = "none"
+top  pointer only              0/8    same
+tail exact-value index         8/8    ✓
+top  exact-value index         8/8    ✓
+tail summary duplicate         8/8    ✓
+top  summary duplicate         8/8    ✓
+tail full duplicate            8/8    ✓
+top  full duplicate            8/8    ✓
+```
+
+**Pointers don't work.** A safe-zone pointer ("the record is window W5624") returns the
+correct `window_id` but then fills `incident_code:"none"`, `checksum:"none"` — it can name
+*which* record matters but cannot route the model back into the dead zone to read the
+values. **Only layouts that place the actual answer values in a safe zone succeed.**
+
+A compact **exact-value index** (id + value + checksum) at the top *or* before the question
+hits 8/8 and is cheaper than duplicating the full payload (which also works). Final
+architecture: treat the raw middle as **storage**; treat a top/tail exact-value index as the
+model's **readable retrieval surface**; validate exact IDs with a checksum (the failure mode
+is confident confabulation, so validation is mandatory).
+
 ## Files
 - `bench_kv.py` / `results.json` / `raw.jsonl` — Part 1 (retrieval)
 - `bench_coherence.py` / `results_coherence.json` / `raw_coherence.jsonl` — Part 2 (coherence + shaping)
