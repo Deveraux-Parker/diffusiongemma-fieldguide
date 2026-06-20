@@ -136,21 +136,23 @@ footer code{font-family:var(--mono);color:var(--ink);background:var(--paper2);pa
   <div class="panel chartframe" style="margin-top:0">
     <div class="cap"><b>Depth soundings — retrieval vs. distance from the question</b><span class="mono muted">one ~5.8k-token survey · 5 casts/point</span></div>
     <div id="valley"></div>
-    <figcaption>Safe in close (recency) and far out (primacy); the bottom drops away in the shoal at ~1000 tokens.</figcaption>
+    <figcaption>Safe in close (recency) and far out (primacy); a trap at ~1000 tokens. This is a single survey — the trap’s exact spot is set by a fixed block grid (§II), not by distance alone.</figcaption>
   </div>
 </section>
 
 <!-- 02 THE TIDE -->
 <section id="tide">
   <div class="sh"><span class="idx">II</span><div>
-    <span class="eyebrow">The hazard moves</span>
-    <h2>The shoal drifts with the tide.</h2></div></div>
-  <p class="sub">Pin a fact at <b>exactly 1000 tokens from the question</b> and change only the document’s total length.
-    The shoal comes and goes — readable, lost, readable, lost. It stays anchored to the question (~1000 tokens out), but whether it’s exposed depends on the tide.</p>
+    <span class="eyebrow">It isn’t a tide — it’s a grid</span>
+    <h2>The hazard is a fixed 1024-block lattice.</h2></div></div>
+  <p class="sub">The “shoal” isn’t weather — it’s a <b>deterministic position law</b>. The context is a grid of 1024-token blocks. A fact is readable
+    <i>everywhere</i> except one trap: when it lands in the <b>even-numbered block immediately before the question’s block</b>. Nothing drifts; what looked like a moving hazard was just the document length sliding a fact across fixed grid lines.</p>
   <div class="panel chartframe" style="margin-top:0">
-    <div class="cap"><b>Same fact, same 1000-token distance — only the document length changes</b><span class="mono muted">8 casts/point</span></div>
-    <div id="osc"></div>
+    <div class="cap"><b>Add lorem padding at the top — a dead fact wakes up</b><span class="mono muted">distance to the question held constant at ~1015 tok · 12 casts/point</span></div>
+    <div id="shift"></div>
+    <figcaption>Same record, same distance the whole time. Padding the top shifts the fact across 1024-block boundaries: in an even block (0 / 2048 pad) it’s lost; pushed into the next, odd block (~1024 pad) it’s perfectly read.</figcaption>
   </div>
+  <div class="note gold"><b>Why this is good news:</b> a deterministic grid is <i>navigable</i>. You can compute exactly where the trap is (it’s ~768–2048 tokens before your question, on an even block) and route around it — or, as above, nudge the whole document by padding. We confirmed the period is exactly 2048 = two × the model’s 1024 sliding-window.</div>
 </section>
 
 <!-- 03 FALSE SOUNDINGS -->
@@ -175,8 +177,8 @@ footer code{font-family:var(--mono);color:var(--ink);background:var(--paper2);pa
   <div class="sh"><span class="idx">IV</span><div>
     <span class="eyebrow">The route</span>
     <h2>Route your cargo around the shoal.</h2></div></div>
-  <p class="sub">Because the shoal sits at a known place — ~600–1500 tokens before the question — you can simply <b>not sail through it</b>.
-    Fill that window with ballast (filler text) and keep your real records in the working water. Same document length; the difference is dramatic.</p>
+  <p class="sub">Because the trap sits at a <b>known, computable place</b> — the even-block ~768–2048 tokens before the question — you can simply <b>not sail through it</b>.
+    Measured reliability by zone: <b style="color:var(--harbor)">last ~600 tokens → ~97%</b>; <b style="color:var(--shoal)">~600–2048 out → ~61%</b> (the trap); <b style="color:var(--harbor)">beyond ~2048 → ~92%</b>. Keep must-read values in the harbour or the deep water; ballast the trap.</p>
   <div class="panel">
     <div id="passageChart"></div>
     <div class="note"><b>The result:</b> four records to retrieve from a long document. Stranded on the shoal → <b>10/40</b> codes (all-four on 0/10 runs).
@@ -187,7 +189,7 @@ footer code{font-family:var(--mono);color:var(--ink);background:var(--paper2);pa
         <div class="codeblock"><span class="c"># bulk records — anywhere outside the shoal</span>
 RECORD ... <span class="k">RI-12345</span>
 RECORD ...
-<span class="c"># BALLAST — reserve ~600–1500 tokens before the question</span>
+<span class="c"># BALLAST — reserve ~768-2048 tokens before the question</span>
 <span class="x">lorem ipsum dolor sit amet ... (filler)</span>
 <span class="c"># harbour: an exact-VALUE index, right by the question</span>
 INDEX: id=<span class="k">W1234</span> code=<span class="k">RI-12345</span> checksum=<span class="k">RS-99</span>
@@ -278,7 +280,9 @@ INDEX: id=<span class="k">W1234</span> code=<span class="k">RI-12345</span> chec
   <span class="eyebrow" style="color:var(--ink2)">Ship’s log</span>
   <p style="margin:14px 0 0;max-width:780px">Every sounding taken locally against a running vLLM server
   (<code>dg-awq</code>, AWQ/compressed-tensors INT4, RTX 4090, <code>max_model_len 8000</code>, single-user). 6–10 casts per point;
-  every claim was confirmed by reading raw outputs, not aggregates — which is how the shoal got re-charted several times as we surveyed further.
+  every claim was confirmed by reading raw outputs, not aggregates — which is how the hazard got re-charted from a “drifting shoal” to a fixed block grid as we surveyed further.
+  The block-parity law was nailed by a 608-trial position decomposition and verified by a 13-agent analysis that re-explained every prior result (89–100% fit) and refuted artifact hypotheses.
+  Honest caveat: the <i>effect</i> is high-confidence and deterministic, but the exact <i>architectural cause</i> of the even/odd asymmetry (sliding-window × absolute KV/decode grid) is medium-confidence and still under investigation — a 1024-token sliding window alone is parity-free.
   Harnesses (timestamped runs, raw logs, Wilson intervals) live in <code>DIFFBENCH/</code> and <code>NEWBENCH/</code> with the full <code>REPORT.md</code>.</p>
 </div></footer>
 
@@ -292,7 +296,7 @@ const C={ink:"#1B2A27",ink2:"#4A5A53",sand:"#CBB888",harbor:"#2E7D5B",shoal:"#C0
 
 const DATA={
  valley:[{d:223,h:5},{d:418,h:5},{d:616,h:3},{d:816,h:1},{d:1012,h:0},{d:1210,h:0},{d:1525,h:0},{d:2038,h:5},{d:3030,h:5},{d:4015,h:5}],
- osc:[{f:"4.0k",h:1},{f:"4.3k",h:6},{f:"4.6k",h:6},{f:"4.9k",h:6},{f:"5.2k",h:1},{f:"5.5k",h:0},{f:"5.8k",h:0},{f:"6.1k",h:1},{f:"6.4k",h:6},{f:"6.7k",h:6},{f:"7.0k",h:6},{f:"7.3k",h:1},{f:"7.6k",h:0}],
+ shift:[{k:"0",h:0},{k:"256",h:1},{k:"512",h:0},{k:"768",h:10},{k:"1024",h:12},{k:"1280",h:12},{k:"1536",h:12},{k:"2048",h:0}],
  coh:[{kv:9,c:5},{kv:15,c:5},{kv:27,c:5},{kv:52,c:5},{kv:78,c:5},{kv:92,c:5}],
  temp:[.654,.703,.620,.577,.684], tempL:["0","","1","","2"],
  canvas:[{n:128,ms:627},{n:224,ms:679},{n:256,ms:629},{n:288,ms:1200},{n:384,ms:1105},{n:512,ms:1293},{n:640,ms:1350}],
@@ -383,8 +387,14 @@ function vbars(mount,items,opts){
   if(opts.marker!=null){const mx=pl+opts.marker*bw;svg.appendChild(el("line",{x1:mx,y1:pt-2,x2:mx,y2:y(0),stroke:C.shoal,"stroke-dasharray":"3 3","stroke-width":1,opacity:.7}));}
   mount.appendChild(svg);
 }
-function drawOsc(){vbars($("#osc"),DATA.osc.map(p=>({v:p.h,l:p.f})),{ymax:6,ystep:3,fmt:g=>Math.round(g/6*100)+"%",
-  col:it=>it.v>=4?C.harbor:C.shoal});}
+function drawShift(){
+  vbars($("#shift"),DATA.shift.map(p=>({v:p.h,l:p.k})),{ymax:12,ystep:6,fmt:g=>Math.round(g/12*100)+"%",
+    col:it=>it.v>=6?C.harbor:C.shoal});
+  const cap=document.createElement("div");
+  cap.style.cssText="font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--ink2);text-align:center;margin-top:6px";
+  cap.innerHTML="tokens of padding added at the TOP →  &nbsp; (needle block: even·even·even → <b style='color:#2E7D5B'>odd·odd·odd·odd</b> → even)";
+  $("#shift").appendChild(cap);
+}
 function drawTemp(){vbars($("#temp"),DATA.temp.map((d,i)=>({v:d,l:DATA.tempL[i]})),{ymax:1,compact:true,col:()=>C.water});}
 function drawCanvas(){vbars($("#canvas"),DATA.canvas.map(p=>({v:p.ms,l:p.n})),{ymax:1450,compact:true,marker:3,col:it=>it.l<=256?C.harbor:C.gold});}
 
@@ -405,7 +415,7 @@ function hbars(mount,items,opts){
 function drawPassage(){hbars($("#passageChart"),DATA.passage,{val:m=>m.pct+"% recall",pct:m=>m.pct});}
 function drawTerse(){hbars($("#terse"),DATA.terse.map(t=>({k:t.k,ok:t.ok,v:t.v})),{val:m=>m.ok?`${m.v}/8 correct`:`${m.v}/8 (7 empty)`,pct:m=>m.v/8*100});}
 
-drawCoast();drawValley();drawOsc();drawCoh();drawTemp();drawCanvas();drawPassage();drawTerse();
+drawCoast();drawValley();drawShift();drawCoh();drawTemp();drawCanvas();drawPassage();drawTerse();
 </script>
 </body>
 </html>

@@ -365,6 +365,49 @@ that was a read error — at that length the single dead tooth sat ~1000 tok bef
 question and every other sampled position was simply outside the band. Lorem did not
 remove the shoal.
 
+---
+
+# Part 8 — MECHANISM SOLVED: deterministic 1024-block-parity (period 2048)
+
+The "shoal / oscillation / brittleness" of Parts 1–7 is ONE deterministic effect, found by a
+608-trial position decomposition (`NEWBENCH/mechanism_decomposition.py`) that varied needle
+absolute position `n`, question position `q`, and distance `D` independently on a 500-token lattice.
+
+**The law** (B=1024; `Bn=⌊n/1024⌋`, `Bq=⌊q/1024⌋`, `diff=Bq−Bn`): a fact is readable unless it
+sits in the **even-indexed 1024-block immediately before the question's block** — i.e. `diff==1
+AND Bn even`, within distance `D∈[~768,2048]`. Same block (recency) and ≥2 blocks back (primacy)
+are always fine. ~89.5% per-trial accuracy (misses are 1024-edge transitions).
+
+```
+(needle_block, query_block) hit-rate:
+  diff 0 (same block):        83–100%
+  diff 1, Bn ODD:  99/98/...  ALIVE
+  diff 1, Bn EVEN: 28/19/9%   DEAD   <- the trap
+  diff ≥2:                    85–100%
+```
+
+**The 1024-shift probe (`shift_probe.py`) — decisive.** Holding distance constant at ~1015,
+padding the document START shifts the needle's absolute block:
+```
+pad K:      0    256   512   768   1024  1280  1536  2048
+needle blk: 4    4     4     5     5     5     5     6      (even→odd→even)
+retrieval:  0/12 1/12  0/12  10/12 12/12 12/12 12/12 0/12
+```
+A position-relative window cannot flip at constant distance → the grid is **absolute**, period
+exactly **2048 = 2 × the config's `sliding_window` (1024)**.
+
+**Verification (13-agent workflow `wf_02a950b8-0e6`).** Re-explains every prior experiment
+(isolate-checksum 100%, fine-fill 94.9%, multifill resolves the non-monotonic collapse-then-recover);
+adversary refuted all artifact hypotheses (independent seeds in the same block agree; block-size
+sensitivity peaks at *exactly* 1024). Architecture: 25 sliding + 5 full-attention layers explain
+diff0/diff≥2; diff1 is sliding-only, where parity shows. **Caveat (medium confidence):** a 1024
+sliding window alone is parity-free; the even/odd must come from an absolute KV/decode grid ×
+window — exact cause not yet pinned.
+
+**Corrected guidance:** D<~600 → ~97%; avoid D∈[~600,2048] → ~61%; D>2048 → ~92% (+ a separate
+primacy dip in the opening ~2–3k tokens). This SUPERSEDES the earlier "weak/brittle mid-context
+retrieval" and "shoal drifts with the tide" framings — retrieval is deterministic and navigable.
+
 ## Files
 - `bench_kv.py` / `results.json` / `raw.jsonl` — Part 1 (retrieval)
 - `bench_coherence.py` / `results_coherence.json` / `raw_coherence.jsonl` — Part 2 (coherence + shaping)
