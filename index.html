@@ -3,533 +3,409 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DiffusionGemma — a field guide to its behavior</title>
+<title>DiffusionGemma — a field chart</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0A0D16; --bg2:#070A11; --panel:#121626; --panel2:#161B2C;
-  --ink:#ECEFF7; --muted:#8A92A8; --faint:#5A6178;
-  --cyan:#3FE0CC; --amber:#F6A93B; --crimson:#FF5470; --violet:#8B7CF6; --jade:#54D98B;
-  --grid:rgba(255,255,255,.07); --hair:rgba(255,255,255,.10);
+  --paper:#E7ECE3; --paper2:#EEF2E9; --card:#F2F5ED;
+  --ink:#1B2A27; --ink2:#4A5A53; --faint:#8A988F;
+  --sand:#CBB888; --harbor:#2E7D5B; --shoal:#C0392B; --water:#5E8C97; --deep:#34636D; --gold:#9C7320;
+  --line:rgba(27,42,39,.16); --hair:rgba(27,42,39,.12);
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
-  --disp:"Space Grotesk",system-ui,sans-serif;
+  --disp:"Fraunces",Georgia,serif;
   --body:"Inter",system-ui,sans-serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);
-  font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background-image:radial-gradient(var(--hair) .6px,transparent .6px);background-size:22px 22px}
 .wrap{max-width:1080px;margin:0 auto;padding:0 28px}
-a{color:var(--cyan)}
-h1,h2,h3{font-family:var(--disp);font-weight:600;letter-spacing:-.02em;line-height:1.08;margin:0}
-.eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--violet);font-weight:500}
-.muted{color:var(--muted)}
+a{color:var(--deep)}
+h1,h2,h3{font-family:var(--disp);font-weight:600;letter-spacing:-.01em;line-height:1.04;margin:0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:500}
+.muted{color:var(--ink2)}
 .mono{font-family:var(--mono)}
 
-.hero{position:relative;padding:104px 0 64px;overflow:hidden}
-.hero canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.5;z-index:0}
-.hero .wrap{position:relative;z-index:1}
-.kicker{display:flex;gap:14px;align-items:center;margin-bottom:30px}
-.kicker .dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);
-  box-shadow:0 0 0 4px rgba(63,224,204,.16);animation:pulse 2.6s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-h1.title{font-size:clamp(40px,7vw,82px);font-weight:700;margin:0 0 22px}
-h1.title .v{color:var(--crimson)}
-.lede{font-size:clamp(18px,2.4vw,23px);color:#C5CBDA;max-width:680px;margin:0 0 8px}
+.hero{padding:84px 0 56px;position:relative}
+.kicker{display:flex;gap:13px;align-items:center;margin-bottom:26px}
+.kicker .dot{width:9px;height:9px;border-radius:50%;background:var(--harbor);box-shadow:0 0 0 4px rgba(46,125,91,.16)}
+h1.title{font-size:clamp(42px,8vw,88px);font-weight:600;font-optical-sizing:auto;margin:0 0 22px;letter-spacing:-.02em}
+.lede{font-size:clamp(18px,2.3vw,22px);color:var(--ink2);max-width:680px;margin:0}
 .lede b{color:var(--ink);font-weight:600}
 
-.heroChart{margin:44px 0 0;background:linear-gradient(180deg,rgba(18,22,38,.7),rgba(10,13,22,.4));
-  border:1px solid var(--hair);border-radius:16px;padding:26px 24px 18px;backdrop-filter:blur(3px)}
-.heroChart .cap{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:10px}
-.heroChart .cap b{font-family:var(--disp);font-size:18px;font-weight:600}
+.chartframe{margin:42px 0 0;background:var(--card);border:1px solid var(--line);border-radius:6px;
+  padding:22px 22px 14px;box-shadow:0 1px 0 rgba(27,42,39,.04)}
+.chartframe .cap{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:8px}
+.chartframe .cap b{font-family:var(--disp);font-size:17px;font-weight:600}
+figcaption{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:10px;text-align:center}
 
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:30px 0 0}
-.stat{background:var(--panel);border:1px solid var(--hair);border-radius:13px;padding:18px 16px}
-.stat .n{font-family:var(--disp);font-size:30px;font-weight:700;letter-spacing:-.02em}
-.stat .l{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-top:4px;text-transform:uppercase}
-.stat.good .n{color:var(--cyan)} .stat.warn .n{color:var(--amber)} .stat.bad .n{color:var(--crimson)}
+.soundings{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin:32px 0 0;background:var(--line);
+  border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.sound{background:var(--card);padding:18px 16px}
+.sound .n{font-family:var(--disp);font-size:27px;font-weight:600}
+.sound .l{font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:var(--ink2);margin-top:4px;text-transform:uppercase}
+.s-good .n{color:var(--harbor)} .s-bad .n{color:var(--shoal)} .s-gold .n{color:var(--gold)}
 
-section{padding:74px 0;border-top:1px solid var(--grid)}
-.sh{display:flex;gap:16px;align-items:baseline;margin-bottom:8px}
-.sh .idx{font-family:var(--mono);font-size:13px;color:var(--violet);font-weight:500;padding-top:6px}
-h2{font-size:clamp(27px,4vw,40px)}
-.sub{color:var(--muted);max-width:700px;margin:14px 0 36px;font-size:18px}
+section{padding:70px 0;border-top:1px solid var(--line)}
+.sh{display:flex;gap:16px;align-items:baseline;margin-bottom:6px}
+.sh .idx{font-family:var(--mono);font-size:13px;color:var(--gold);font-weight:500;padding-top:8px}
+h2{font-size:clamp(28px,4.2vw,44px);font-weight:600}
+.sub{color:var(--ink2);max-width:700px;margin:14px 0 34px;font-size:18px}
 
-.panel{background:var(--panel);border:1px solid var(--hair);border-radius:16px;padding:28px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:26px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 
-.bars{display:flex;flex-direction:column;gap:18px;margin-top:6px}
-.barrow .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
-.barrow .top .name{font-family:var(--mono);font-size:14px}
-.barrow .top .val{font-family:var(--disp);font-weight:600;font-size:15px}
-.track{height:30px;background:var(--bg2);border-radius:7px;overflow:hidden;border:1px solid var(--hair)}
-.fill{height:100%;border-radius:6px 0 0 6px;display:flex;align-items:center;padding-left:11px;
-  font-family:var(--mono);font-size:12px;color:#0A0D16;font-weight:600;
-  transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.note{border-left:3px solid var(--harbor);background:rgba(46,125,91,.07);padding:15px 19px;border-radius:0 5px 5px 0;margin-top:22px;font-size:16px}
+.note b{color:var(--harbor)}
+.note.warn{border-color:var(--shoal);background:rgba(192,57,43,.06)} .note.warn b{color:var(--shoal)}
+.note.gold{border-color:var(--gold);background:rgba(156,115,32,.07)} .note.gold b{color:var(--gold)}
 
-.callout{border-left:3px solid var(--cyan);background:rgba(63,224,204,.06);
-  padding:16px 20px;border-radius:0 10px 10px 0;margin-top:24px;font-size:16px}
-.callout b{color:var(--cyan)}
-.callout.warn{border-color:var(--amber);background:rgba(246,169,59,.06)}
-.callout.warn b{color:var(--amber)}
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px}
+.qcard .tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--gold)}
+.qcard h3{font-size:18px;margin:10px 0 7px}
+.qcard p{margin:0;color:var(--ink2);font-size:14.5px}
+.qcard .metric{font-family:var(--disp);font-size:25px;font-weight:600;margin-top:12px}
+.t-good{color:var(--harbor)} .t-bad{color:var(--shoal)} .t-gold{color:var(--gold)} .t-water{color:var(--deep)}
 
-.qcard{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:22px}
-.qcard .tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
-.qcard h3{font-size:19px;margin:11px 0 8px}
-.qcard p{margin:0;color:var(--muted);font-size:15px}
-.qcard .metric{font-family:var(--disp);font-size:26px;font-weight:700;margin-top:14px}
-.t-good{color:var(--cyan)} .t-warn{color:var(--amber)} .t-bad{color:var(--crimson)} .t-violet{color:var(--violet)}
+.codeblock{font-family:var(--mono);font-size:12.5px;line-height:1.65;background:var(--paper);border:1px solid var(--line);
+  border-radius:5px;padding:16px 18px;margin-top:6px;overflow-x:auto;white-space:pre;color:var(--ink2)}
+.codeblock .k{color:var(--harbor);font-weight:600} .codeblock .c{color:var(--faint)} .codeblock .x{color:var(--shoal)}
 
-.codeblock{font-family:var(--mono);font-size:13px;line-height:1.7;background:var(--bg2);
-  border:1px solid var(--hair);border-radius:11px;padding:18px 20px;margin-top:6px;overflow-x:auto;white-space:pre;color:#C5CBDA}
-.codeblock .c{color:var(--faint)} .codeblock .k{color:var(--cyan)} .codeblock .q{color:var(--amber)}
+.matrix{display:grid;grid-template-columns:72px 1fr 1fr;gap:10px;align-items:stretch}
+.mlab{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink2);display:flex;align-items:center;justify-content:center;text-align:center}
+.cell{border:1px solid var(--line);border-radius:5px;padding:16px;background:var(--paper2)}
+.cell .v{font-family:var(--disp);font-weight:600;font-size:15px} .cell p{margin:5px 0 0;font-size:13.5px;color:var(--ink2)}
+.cell.sweet{border-color:var(--harbor);background:rgba(46,125,91,.08)} .cell.sweet .v{color:var(--harbor)}
+.cell.danger{border-color:var(--shoal);background:rgba(192,57,43,.06)} .cell.danger .v{color:var(--shoal)}
+.cell.mixed{border-color:var(--gold)} .cell.mixed .v{color:var(--gold)}
+.cell.fine .v{color:var(--ink2)}
 
-.rules{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
-.rule{display:flex;gap:14px;background:var(--panel);border:1px solid var(--hair);border-radius:12px;padding:18px 20px}
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:8px}
+.rule{display:flex;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:17px 19px}
 .rule .mk{font-family:var(--disp);font-weight:700;font-size:20px;line-height:1}
-.rule.do .mk{color:var(--jade)} .rule.dont .mk{color:var(--crimson)}
-.rule p{margin:0;font-size:15px}
-.rule .h{font-family:var(--mono);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.rule.do .mk{color:var(--harbor)} .rule.dont .mk{color:var(--shoal)}
+.rule p{margin:0;font-size:14.5px}
+.rule .h{font-family:var(--mono);font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink2);margin-bottom:4px}
 
-.chartbox .ax{font-family:var(--mono);font-size:11px;fill:var(--muted)}
-.chartbox .gl{stroke:var(--grid);stroke-width:1}
-figcaption{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:12px;text-align:center}
-
-footer{padding:60px 0 80px;border-top:1px solid var(--grid);color:var(--muted);font-size:14px}
-footer code{font-family:var(--mono);color:#B7BECF;background:var(--panel);padding:2px 7px;border-radius:5px;font-size:13px}
+footer{padding:54px 0 78px;border-top:1px solid var(--line);color:var(--ink2);font-size:14px}
+footer code{font-family:var(--mono);color:var(--ink);background:var(--paper2);padding:2px 6px;border-radius:4px;font-size:13px;border:1px solid var(--line)}
 
 @media(max-width:860px){
-  .stats{grid-template-columns:repeat(2,1fr)} .grid2,.grid3,.rules{grid-template-columns:1fr}
+  .soundings{grid-template-columns:repeat(2,1fr)} .grid2,.grid3,.rules{grid-template-columns:1fr}
 }
-@media(prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-  .hero canvas{display:none}
-}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 
-<header class="hero">
-  <canvas id="noise"></canvas>
-  <div class="wrap">
-    <div class="kicker"><span class="dot"></span>
-      <span class="eyebrow">DiffusionGemma-26B-A4B · block-diffusion · RTX 4090 · DIFFBENCH</span></div>
-    <h1 class="title">It reads brilliantly<br>— until the fact falls<br>into the <span class="v">valley</span>.</h1>
-    <p class="lede">A model that denoises a 256-token canvas instead of writing left-to-right. The consequence runs through everything we measured:
-      <b>where you put a fact matters more than how much context you give it</b> — and “where” turns out to be stranger than it looks.</p>
+<header class="hero"><div class="wrap">
+  <div class="kicker"><span class="dot"></span>
+    <span class="eyebrow">A field chart · DiffusionGemma-26B-A4B · block-diffusion · RTX 4090</span></div>
+  <h1 class="title">Charting the<br>context window.</h1>
+  <p class="lede">A model that denoises a 256-token canvas instead of writing left to right. Read its context like a coastline:
+    there are <b>safe shores</b>, open water, and <b>one shoal</b> where facts simply vanish. Here is the chart — and the route around it.</p>
 
-    <figure class="heroChart chartbox">
-      <div class="cap">
-        <b>Can it find a fact, by how far that fact sits from your question?</b>
-        <span class="mono muted">at one ~5.8k-token prompt · 5 trials/point</span>
-      </div>
-      <div id="valley"></div>
-      <figcaption>The first thing we saw: a clean valley. It’s real — but §03 shows the valley <b>moves with prompt length</b>, so this is a slice, not a law.</figcaption>
-    </figure>
+  <figure class="chartframe">
+    <div class="cap"><b>The context window, surveyed</b><span class="mono muted">retrieval by position · the question is the harbour at right</span></div>
+    <div id="coast"></div>
+    <figcaption>Soundings = how reliably a fact at that position is read. Deep & green is safe; the red shoal is where it is lost.</figcaption>
+  </figure>
 
-    <div class="stats">
-      <div class="stat good"><div class="n">~100%</div><div class="l">recall from the safe zones</div></div>
-      <div class="stat good"><div class="n">5/5</div><div class="l">coherence held to 92% fill</div></div>
-      <div class="stat good"><div class="n">8/8</div><div class="l">valid strict JSON</div></div>
-      <div class="stat bad"><div class="n">7/8</div><div class="l">empty replies on terse prompts</div></div>
-      <div class="stat warn"><div class="n">0/8</div><div class="l">read from a dead-zone position</div></div>
-    </div>
+  <div class="soundings">
+    <div class="sound s-good"><div class="n">★ short→long</div><div class="l">its sweet spot — generation</div></div>
+    <div class="sound s-good"><div class="n">92%</div><div class="l">context fill, coherence still flat</div></div>
+    <div class="sound s-bad"><div class="n">~1000</div><div class="l">tokens before the question = the shoal</div></div>
+    <div class="sound s-gold"><div class="n">25→95%</div><div class="l">recall, once you route around it</div></div>
   </div>
-</header>
+</div></header>
 
 <main class="wrap">
 
-<!-- 01 THE ONE RULE -->
-<section id="rule">
-  <div class="sh"><span class="idx">01</span><div>
-    <span class="eyebrow">The single most useful thing we found</span>
-    <h2>Never ask it for a one-word answer.</h2></div></div>
-  <p class="sub">Ask “reply with <i>only</i> the number” and the denoiser often stops at nothing — it returns an empty string.
-    Ask the exact same question as a short sentence and it answers correctly almost every time. This one quirk was masquerading as “bad at counting.”</p>
-  <div class="panel">
-    <div class="bars">
-      <div class="barrow">
-        <div class="top"><span class="name">“Reply with ONLY the number”</span><span class="val t-bad">7 / 8 came back empty</span></div>
-        <div class="track"><div class="fill" data-w="87.5" style="background:var(--crimson)">empty</div></div>
-      </div>
-      <div class="barrow">
-        <div class="top"><span class="name">“Answer in one short sentence”</span><span class="val t-good">0 / 8 empty · 8/8 correct</span></div>
-        <div class="track"><div class="fill" data-w="3" style="background:var(--cyan)"></div></div>
-      </div>
-      <div class="barrow">
-        <div class="top"><span class="name">“List each line, then state the count”</span><span class="val t-good">1 / 8 empty · 7/8 correct</span></div>
-        <div class="track"><div class="fill" data-w="12.5" style="background:var(--amber)"></div></div>
-      </div>
-    </div>
-    <div class="callout"><b>Do this:</b> ask for a short sentence (or JSON) and parse the value yourself. The model can count, take a maximum, and find a threshold-crossing perfectly — it just won’t hand you a bare token.</div>
+<!-- 01 THE CHART -->
+<section id="chart">
+  <div class="sh"><span class="idx">I</span><div>
+    <span class="eyebrow">The survey</span>
+    <h2>Two safe shores, and a shoal.</h2></div></div>
+  <p class="sub">The model reads reliably in two places: <b>near the very start</b> of the context (primacy) and in the
+    <b>last few hundred tokens</b> before your question (recency). Between them lies a narrow shoal — roughly 600–1500 tokens
+    before the question — where a fact is lost. This is the depth profile, read from the harbour outward.</p>
+  <div class="panel chartframe" style="margin-top:0">
+    <div class="cap"><b>Depth soundings — retrieval vs. distance from the question</b><span class="mono muted">one ~5.8k-token survey · 5 casts/point</span></div>
+    <div id="valley"></div>
+    <figcaption>Safe in close (recency) and far out (primacy); the bottom drops away in the shoal at ~1000 tokens.</figcaption>
   </div>
 </section>
 
-<!-- 02 POSITION + CONFABULATION -->
-<section id="position">
-  <div class="sh"><span class="idx">02</span><div>
-    <span class="eyebrow">Where it reads, and where it lies</span>
-    <h2>Two zones you can trust — and a middle that makes things up.</h2></div></div>
-  <p class="sub">The model uses sliding-window attention (window ≈ 1024 tokens) with full attention only every sixth layer. Two regions stay reliable:
-    facts <b>near the very start</b> (primacy) and facts <b>in the last few hundred tokens</b> before the question (recency).
-    A fact in between can be lost — and it doesn’t fail honestly. It confabulates.</p>
+<!-- 02 THE TIDE -->
+<section id="tide">
+  <div class="sh"><span class="idx">II</span><div>
+    <span class="eyebrow">The hazard moves</span>
+    <h2>The shoal drifts with the tide.</h2></div></div>
+  <p class="sub">Pin a fact at <b>exactly 1000 tokens from the question</b> and change only the document’s total length.
+    The shoal comes and goes — readable, lost, readable, lost. It stays anchored to the question (~1000 tokens out), but whether it’s exposed depends on the tide.</p>
+  <div class="panel chartframe" style="margin-top:0">
+    <div class="cap"><b>Same fact, same 1000-token distance — only the document length changes</b><span class="mono muted">8 casts/point</span></div>
+    <div id="osc"></div>
+  </div>
+</section>
+
+<!-- 03 FALSE SOUNDINGS -->
+<section id="false">
+  <div class="sh"><span class="idx">III</span><div>
+    <span class="eyebrow">Why it’s dangerous</span>
+    <h2>On the shoal, it invents the depth.</h2></div></div>
+  <p class="sub">It never reports “no bottom found.” Asked for a field of a record stranded on the shoal, it fills the slot with a plausible value from its priors — fluently, confidently, wrongly.</p>
   <div class="panel">
-    <h3 style="font-size:18px;margin-bottom:4px">We asked for fields of a record stranded in the middle</h3>
-    <p class="muted" style="font-size:15px;margin:6px 0 16px">It never said “not found.” It filled each slot with a plausible value from its priors — every time:</p>
     <div class="mono" style="font-size:13.5px;line-height:1.95">
       <div><span class="muted">its temperature (really 87.3°C)</span> &nbsp;→&nbsp; <span class="t-bad">“21.90°C”</span> <span class="muted">a normal reading</span></div>
       <div><span class="muted">its code colour</span> &nbsp;→&nbsp; <span class="t-bad">“green”</span> <span class="muted">not even in the set</span></div>
       <div><span class="muted">the exact code</span> &nbsp;→&nbsp; <span class="t-bad">“90002”</span> <span class="muted">a neighbour’s timestamp</span></div>
     </div>
-    <p class="muted" style="font-size:14px;margin:14px 0 0">A weak “something critical is here” gist survives ~7/10 of the time — but <b style="color:#C5CBDA">no specific field can be read</b>,
-      not even a 1-of-6 colour. The same record in a safe zone: <b style="color:var(--cyan)">10/10</b>.</p>
-    <div class="callout warn" style="margin-top:18px"><b>Watch out:</b> middle-of-prompt errors are fluent, confident, and wrong — the most dangerous kind. Never trust a value from the middle of a long prompt without a checksum or source-quote to verify it.</div>
+    <p class="muted" style="font-size:14.5px;margin:14px 0 0">A faint “something is here” reading survives ~7/10 of the time — but <b style="color:var(--ink)">no exact value can be read</b>, not even a 1-of-6 colour. The same record in safe water: <b style="color:var(--harbor)">10/10</b>.</p>
+    <div class="note warn" style="margin-top:18px"><b>The danger:</b> a wrong sounding looks exactly like a right one. Never trust a value drawn from the middle of a long context without a checksum to verify it.</div>
   </div>
 </section>
 
-<!-- 03 THE TWIST -->
-<section id="twist">
-  <div class="sh"><span class="idx">03</span><div>
-    <span class="eyebrow">The plot twist</span>
-    <h2>The dead zone isn’t a distance. It moves with length.</h2></div></div>
-  <p class="sub">We assumed the dead zone sat a fixed distance before the question. It doesn’t. Pin a fact at <b>exactly 1000 tokens from the question</b>
-    and change only the prompt’s total length — retrieval flips on and off: perfect, gone, perfect, gone.</p>
+<!-- 04 SAFE PASSAGE -->
+<section id="passage">
+  <div class="sh"><span class="idx">IV</span><div>
+    <span class="eyebrow">The route</span>
+    <h2>Route your cargo around the shoal.</h2></div></div>
+  <p class="sub">Because the shoal sits at a known place — ~600–1500 tokens before the question — you can simply <b>not sail through it</b>.
+    Fill that window with ballast (filler text) and keep your real records in the working water. Same document length; the difference is dramatic.</p>
   <div class="panel">
-    <div id="osc" class="chartbox"></div>
-    <div class="callout"><b>What this means:</b> the failure is tied to a fact’s <b>absolute position</b> in the prompt — recurring “bad bands” (roughly every ~1900 tokens),
-      most likely from block-aligned sparse attention. The same fact, the same distance from your question, is readable at one length and lost at another. Needle content (we tested adding a checksum) makes no difference.</div>
-    <div class="callout warn" style="margin-top:14px"><b>So stop trying to pick a safe distance.</b> Only two positions hold at <i>every</i> length: the very start, and the last few hundred tokens before the question.
-      <span class="muted">(An earlier version of this page called it a fixed “600–1500 tokens” band — that was this effect measured at a single prompt length, and over-generalized. Corrected here.)</span></div>
-  </div>
-</section>
-
-<!-- 04 STRENGTHS -->
-<section id="strengths">
-  <div class="sh"><span class="idx">04</span><div>
-    <span class="eyebrow">Its real strengths</span>
-    <h2>Front-load it, and a full context costs you almost nothing.</h2></div></div>
-  <p class="sub">When the important information is up front, generation quality is flat across the entire context range — a packed prompt produces the same clean, complete answer as an empty one. It only gets slower, not worse.</p>
-  <div class="grid2">
-    <div class="panel chartbox">
-      <div class="cap" style="display:flex;justify-content:space-between;margin-bottom:6px">
-        <b style="font-family:var(--disp);font-size:17px">Coherence vs. how full the context is</b></div>
-      <div id="coh"></div>
-      <figcaption>Structured-summary quality, spec front-loaded · 0–92% context fill</figcaption>
-    </div>
-    <div style="display:grid;grid-template-rows:1fr 1fr;gap:18px">
-      <div class="qcard"><div class="tag t-good">computed retrieval</div>
-        <h3>It reasons, not just matches</h3>
-        <p>Highest reading, first threshold-crossing, count of anomalies — all correct over a front-loaded series (in sentence form).</p>
-        <div class="metric t-good">max · crossing · count ✓</div></div>
-      <div class="qcard"><div class="tag t-good">structured output</div>
-        <h3>Reliable strict JSON</h3>
-        <p>Asked for a JSON object with a fixed schema and no prose, it complied every time.</p>
-        <div class="metric t-good">8 / 8 valid &amp; conformant</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- 05 QUIRKS -->
-<section id="quirks">
-  <div class="sh"><span class="idx">05</span><div>
-    <span class="eyebrow">Quirks worth knowing</span>
-    <h2>How a diffusion model behaves differently.</h2></div></div>
-  <p class="sub">These aren’t bugs so much as consequences of denoising a whole canvas at once instead of predicting one token at a time.</p>
-  <div class="grid3">
-    <div class="qcard"><div class="tag t-violet">temperature</div>
-      <h3>The temperature knob is nearly inert</h3>
-      <p>From 0.0 to 2.0 the spread of outputs barely moves — and even at 0.0 it isn’t deterministic.</p>
-      <div id="temp" class="chartbox" style="margin-top:14px"></div></div>
-    <div class="qcard"><div class="tag t-violet">determinism</div>
-      <h3>Temp 0 ≠ repeatable</h3>
-      <p>Five identical requests at temperature 0 gave five wordings of the same idea. Meaning is stable; exact text is not. Don’t build byte-exact caches on its output.</p>
-      <div class="metric t-violet">5 / 5 unique wordings</div></div>
-    <div class="qcard"><div class="tag t-amber">latency steps</div>
-      <h3>Cost rises one canvas at a time</h3>
-      <p>Output stays perfectly coherent past 256 tokens — but each new 256-token block adds a full denoising pass, so latency jumps in steps rather than smoothly.</p>
-      <div id="canvas" class="chartbox" style="margin-top:14px"></div></div>
-    <div class="qcard"><div class="tag t-amber">char-drop under load</div>
-      <h3>It can shave a character off a value</h3>
-      <p>Echoing codes in isolation is flawless (20/20). But reading a value out of a <i>full</i> context it sometimes drops a leading character — <span class="mono t-good">93.7</span>→<span class="mono t-bad">3.7</span>. A retrieval artifact, not quantization.</p>
-      <div class="metric"><span class="t-good">20/20</span> <span class="muted" style="font-size:15px">clean echo</span></div></div>
-    <div class="qcard"><div class="tag t-amber">honesty</div>
-      <h3>Mostly admits when a fact is absent</h3>
-      <p>Told to say <span class="mono">NOT FOUND</span> when there’s no match, it did so 7 of 8 times — and hallucinated a code the other time.</p>
-      <div class="metric"><span class="t-good">7/8</span> <span class="muted" style="font-size:15px">honest · </span><span class="t-bad">1/8</span> <span class="muted" style="font-size:15px">made-up</span></div></div>
-    <div class="qcard"><div class="tag t-good">throughput</div>
-      <h3>A single-user speed demon</h3>
-      <p>Because it denoises the whole canvas in parallel, short answers return in ~106 ms and throughput <i>rises</i> with output length — the opposite of a normal model.</p>
-      <div class="metric t-good">~806 tok/s peak</div></div>
-  </div>
-</section>
-
-<!-- 06 THE FIX -->
-<section id="fix">
-  <div class="sh"><span class="idx">06</span><div>
-    <span class="eyebrow">The architecture that works</span>
-    <h2>Store in the middle. Answer from the edges.</h2></div></div>
-  <p class="sub">You can’t make the middle readable, so don’t fight it. We ablated nine layouts for a record buried in a dead-zone position.
-    The pattern is sharp: <b>only the strategies that put the actual answer values in a safe zone work</b>.</p>
-  <div class="panel">
-    <div id="mitig" class="chartbox"></div>
-    <div class="callout warn"><b>Pointers don’t work.</b> A safe-zone pointer (“the record is window W5624”) returns the right window — then fills the values with
-      <span class="mono t-bad">incident_code: "none"</span>. It can say <i>which</i> record matters but can’t route the model back into the dead zone to read it.</div>
+    <div id="passageChart"></div>
+    <div class="note"><b>The result:</b> four records to retrieve from a long document. Stranded on the shoal → <b>10/40</b> codes (all-four on 0/10 runs).
+      Relocated to safe water with ballast left on the shoal → <b>38/40</b> codes (all-four on 9/10 runs). Same length, same model.</div>
     <div class="grid2" style="margin-top:22px">
       <div>
-        <h3 style="font-size:17px;margin-bottom:10px">The layout that hit 8/8</h3>
-        <div class="codeblock"><span class="c"># raw records live anywhere — treat the middle as storage</span>
-RAW RECORDS ...
-  window_id=<span class="k">W1234</span> ... incident_code=<span class="k">RI-12345</span> checksum=<span class="k">RS-99999</span>
-RAW RECORDS ...
+        <h3 style="font-size:16px;margin-bottom:10px">The load plan</h3>
+        <div class="codeblock"><span class="c"># bulk records — anywhere outside the shoal</span>
+RECORD ... <span class="k">RI-12345</span>
+RECORD ...
+<span class="c"># BALLAST — reserve ~600–1500 tokens before the question</span>
+<span class="x">lorem ipsum dolor sit amet ... (filler)</span>
+<span class="c"># harbour: an exact-VALUE index, right by the question</span>
+INDEX: id=<span class="k">W1234</span> code=<span class="k">RI-12345</span> checksum=<span class="k">RS-99</span>
 
-<span class="c"># a compact EXACT-VALUE index in a safe zone (top and/or tail)</span>
-RETRIEVAL_INDEX:
-  window_id=<span class="k">W1234</span>; incident_code=<span class="k">RI-12345</span>; checksum=<span class="k">RS-99999</span>
-
-<span class="q">Question:</span> Return JSON from RETRIEVAL_INDEX.</div>
+<span class="c">Question:</span> answer from INDEX.</div>
       </div>
       <div>
-        <h3 style="font-size:17px;margin-bottom:10px">Why this and not duplication</h3>
-        <p class="muted" style="font-size:15px">A compact exact-value index hits 8/8 at the top <i>or</i> just before the question — and it’s far cheaper than copying the whole payload (which also works, but wastes tokens).</p>
-        <p class="muted" style="font-size:15px;margin-top:12px">Because the failure mode is confident confabulation, carry a <b style="color:var(--ink)">checksum</b> and reject any answer that doesn’t match. Treat the raw middle as <b style="color:var(--ink)">storage</b>; the top/tail index is the model’s <b style="color:var(--ink)">readable retrieval surface</b>.</p>
+        <h3 style="font-size:16px;margin-bottom:10px">Two more rules for the harbour</h3>
+        <p class="muted" style="font-size:14.5px"><b style="color:var(--ink)">Carry values, not pointers.</b> A note saying “see record W5624” returns the right id but then fills the fields with <span class="mono t-bad">"none"</span> — it can’t sail back to read them. Put the actual values in the harbour.</p>
+        <p class="muted" style="font-size:14.5px;margin-top:11px"><b style="color:var(--ink)">Carry a checksum.</b> Because a wrong value is fluent and confident, verify exact ids against a checksum and reject mismatches.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 07 WHERE IT FITS -->
-<section id="fit">
-  <div class="sh"><span class="idx">07</span><div>
-    <span class="eyebrow">When to reach for it</span>
-    <h2>It’s a generation engine, not a reader.</h2></div></div>
-  <p class="sub">Nearly everything we found collapses into one limitation: reading an exact fact out of the <i>middle</i> of a long prompt.
-    Generation, coherence, structured output, reasoning, speed — all strengths. So let it <b>generate</b> freely, and keep what it must <b>read</b> in the safe zones.</p>
-
-  <div class="panel">
-    <div style="display:grid;grid-template-columns:84px 1fr 1fr;gap:12px;align-items:stretch">
-      <div></div>
-      <div style="font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center">short response</div>
-      <div style="font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center">long response</div>
-
-      <div style="display:flex;align-items:center;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">short<br>prompt</div>
-      <div style="border-radius:12px;padding:18px;border:1px solid var(--hair);background:var(--bg2)">
-        <div style="font-family:var(--disp);font-weight:600;font-size:15px;color:var(--muted)">Fine — unremarkable</div>
-        <p style="margin:6px 0 0;font-size:14px;color:var(--muted)">Fast (~106 ms floor), but any model does this. You’re not using its edge.</p></div>
-      <div style="border-radius:12px;padding:18px;border:1px solid var(--cyan);background:rgba(63,224,204,.07)">
-        <div style="font-family:var(--disp);font-weight:700;font-size:15px;color:var(--cyan)">★ Sweet spot</div>
-        <p style="margin:6px 0 0;font-size:14px;color:#C5CBDA">Drafting, code, structured synthesis, reasoning. Stays coherent <i>and</i> throughput rises with length — cheapest per token here.</p></div>
-
-      <div style="display:flex;align-items:center;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">long<br>prompt</div>
-      <div style="border-radius:12px;padding:18px;border:1px solid var(--crimson);background:rgba(255,84,112,.06)">
-        <div style="font-family:var(--disp);font-weight:600;font-size:15px;color:var(--crimson)">⚠ Handle with care</div>
-        <p style="margin:6px 0 0;font-size:14px;color:#C5CBDA">Extraction / QA. Confabulates from the middle — only works with the safe-zone index architecture (§06).</p></div>
-      <div style="border-radius:12px;padding:18px;border:1px solid var(--amber);background:rgba(246,169,59,.05)">
-        <div style="font-family:var(--disp);font-weight:600;font-size:15px;color:var(--amber)">Mixed</div>
-        <p style="margin:6px 0 0;font-size:14px;color:#C5CBDA">Gist &amp; global transforms are fine; detail-faithful work needs the facts staged into a safe-zone index first.</p></div>
+<!-- 05 WHAT SHE CARRIES WELL -->
+<section id="cargo">
+  <div class="sh"><span class="idx">V</span><div>
+    <span class="eyebrow">Where she sails best</span>
+    <h2>A generation engine, not a reader.</h2></div></div>
+  <p class="sub">The shoal is the <i>only</i> real hazard, and it only matters when you ask her to <b>read</b> a long context. Ask her to <b>write</b> and she’s superb — coherent at any length, fast, and structured.</p>
+  <div class="grid2">
+    <div class="panel chartframe" style="margin-top:0">
+      <div class="cap"><b>Coherence holds as the hold fills</b></div>
+      <div id="coh"></div>
+      <figcaption>Front-loaded generation quality · flat to 92% context fill</figcaption>
     </div>
-
-    <div class="callout"><b>Fits:</b> drafting &amp; expansion, code generation, data→text, structured JSON workers, reasoning over a small focused context, fast single-user tool/agent loops, front-loaded time-series.</div>
-    <div class="callout warn" style="margin-top:14px"><b>Avoid:</b> naive RAG (dump docs → ask), multi-user batched serving (it saturates the GPU on one request — provision per-session), and anything needing byte-exact reproducibility.</div>
+    <div class="panel">
+      <h3 style="font-size:16px;margin-bottom:12px">Which voyage suits her</h3>
+      <div class="matrix">
+        <div></div>
+        <div class="mlab">short reply</div><div class="mlab">long reply</div>
+        <div class="mlab">short<br>prompt</div>
+        <div class="cell fine"><div class="v">Fine</div><p>Fast, but unremarkable.</p></div>
+        <div class="cell sweet"><div class="v">★ Sweet spot</div><p>Drafting, code, synthesis. Throughput rises with length.</p></div>
+        <div class="mlab">long<br>prompt</div>
+        <div class="cell danger"><div class="v">⚠ Care</div><p>Extraction. Needs the route around the shoal.</p></div>
+        <div class="cell mixed"><div class="v">Mixed</div><p>Gist is fine; detail needs the index.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="grid3" style="margin-top:18px">
+    <div class="qcard"><div class="tag">reasons, not just matches</div><h3>Real computation</h3><p>Highest reading, first threshold-crossing, anomaly count — all correct over a front-loaded series.</p><div class="metric t-good">max · crossing · count ✓</div></div>
+    <div class="qcard"><div class="tag">structured output</div><h3>Reliable strict JSON</h3><p>A fixed schema, no prose — it complied every time.</p><div class="metric t-good">8 / 8 valid</div></div>
+    <div class="qcard"><div class="tag">throughput</div><h3>A single-user speed demon</h3><p>It denoises the whole canvas at once, so short replies land in ~106 ms and throughput <i>rises</i> with output length.</p><div class="metric t-good">~806 tok/s peak</div></div>
   </div>
 </section>
 
-<!-- 08 CHEATSHEET -->
-<section id="cheat">
-  <div class="sh"><span class="idx">08</span><div>
-    <span class="eyebrow">Putting it to work</span>
-    <h2>Six rules that make it reliable.</h2></div></div>
+<!-- 06 QUIRKS -->
+<section id="quirks">
+  <div class="sh"><span class="idx">VI</span><div>
+    <span class="eyebrow">Handling notes</span>
+    <h2>The ship’s quirks.</h2></div></div>
+  <p class="sub">Consequences of denoising a whole canvas at once instead of writing one token at a time.</p>
+  <div class="grid3">
+    <div class="qcard"><div class="tag t-bad">the big one</div><h3>Never ask for one word</h3>
+      <p>“Reply with only the number” returns an empty string <b style="color:var(--shoal)">7/8</b> of the time. Ask for a short sentence and it answers correctly. Parse the value yourself.</p>
+      <div id="terse" style="margin-top:12px"></div></div>
+    <div class="qcard"><div class="tag">temperature</div><h3>The knob is nearly inert</h3>
+      <p>From 0.0 to 2.0 the spread of outputs barely moves — and even at 0.0 it isn’t deterministic. Don’t cache byte-exact.</p>
+      <div id="temp" style="margin-top:12px"></div></div>
+    <div class="qcard"><div class="tag">latency steps</div><h3>Cost rises one canvas at a time</h3>
+      <p>Output stays coherent past 256 tokens, but each new 256-token block adds a full denoising pass — latency jumps in steps.</p>
+      <div id="canvas" style="margin-top:12px"></div></div>
+    <div class="qcard"><div class="tag">char-drop</div><h3>It can shave a character</h3><p>Echoing codes in isolation is flawless (20/20); reading one from a full context it sometimes drops a leading character — <span class="mono t-good">93.7</span>→<span class="mono t-bad">3.7</span>.</p><div class="metric"><span class="t-good">20/20</span> <span class="muted" style="font-size:14px">clean echo</span></div></div>
+    <div class="qcard"><div class="tag">honesty</div><h3>Mostly admits a gap</h3><p>Told to say <span class="mono">NOT FOUND</span> when nothing matches, it does — 7 of 8 times.</p><div class="metric"><span class="t-good">7/8</span> <span class="muted" style="font-size:14px">honest</span></div></div>
+    <div class="qcard"><div class="tag">determinism</div><h3>Temp 0 ≠ repeatable</h3><p>Five identical calls gave five wordings of the same idea. Meaning stable, exact text not.</p><div class="metric t-water">5/5 unique</div></div>
+  </div>
+</section>
+
+<!-- 07 STANDING ORDERS -->
+<section id="orders">
+  <div class="sh"><span class="idx">VII</span><div>
+    <span class="eyebrow">Standing orders</span>
+    <h2>Six rules for a clean voyage.</h2></div></div>
   <div class="rules">
-    <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
-      <p>Put must-retrieve <b>values</b> at the very top, or in the last few hundred tokens before your question.</p></div></div>
-    <div class="rule dont"><span class="mk">✕</span><div><div class="h">Avoid</div>
-      <p>Don’t bury critical values <b>anywhere in the middle</b> — there’s no safe middle distance; it shifts with total length.</p></div></div>
-    <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
-      <p>If a fact lives mid-prompt, add a <b>compact exact-value index</b> (id + value + checksum) in a safe zone.</p></div></div>
-    <div class="rule dont"><span class="mk">✕</span><div><div class="h">Avoid</div>
-      <p>Don’t use a <b>pointer</b> (“see record X”) — it finds the record but invents the values. Carry the values themselves.</p></div></div>
-    <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
-      <p>Ask for a <b>short sentence or JSON</b> and parse it — never “reply with only X.”</p></div></div>
-    <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div>
-      <p><b>Validate exact IDs</b> with a checksum or source-quote — the failure mode is confident, fluent confabulation.</p></div></div>
+    <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div><p>Keep must-read <b>values</b> near the start, or in the last few hundred tokens before the question.</p></div></div>
+    <div class="rule dont"><span class="mk">✕</span><div><div class="h">Avoid</div><p>Don’t place a critical fact <b>~600–1500 tokens before the question</b> — that’s the shoal. Reserve it for filler.</p></div></div>
+    <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div><p>For mid-document facts, add a compact <b>exact-value index</b> (id + value + checksum) in the harbour.</p></div></div>
+    <div class="rule dont"><span class="mk">✕</span><div><div class="h">Avoid</div><p>Don’t use a <b>pointer</b> (“see record X”) — it names the record and invents the values.</p></div></div>
+    <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div><p>Ask for a <b>short sentence or JSON</b> and parse it — never “reply with only X.”</p></div></div>
+    <div class="rule do"><span class="mk">✓</span><div><div class="h">Do</div><p><b>Validate exact ids</b> with a checksum — a wrong sounding looks just like a right one.</p></div></div>
   </div>
 </section>
-
 </main>
 
 <footer><div class="wrap">
-  <span class="eyebrow" style="color:var(--muted)">Methodology</span>
-  <p style="margin:14px 0 0;max-width:780px">All figures measured locally against a running vLLM server
-  (<code>dg-awq</code>, AWQ/compressed-tensors INT4, RTX 4090, <code>max_model_len 8000</code>, single-user).
-  Each data point is 6–10 trials; every headline was confirmed by reading raw model outputs, not just aggregate scores —
-  which is how the dead-zone story got corrected twice as we tested further. Reproducible harnesses (timestamped runs,
-  per-trial raw logs, miss-type categorization, Wilson confidence intervals) live in <code>DIFFBENCH/</code> and <code>NEWBENCH/</code> with the full <code>REPORT.md</code>.</p>
+  <span class="eyebrow" style="color:var(--ink2)">Ship’s log</span>
+  <p style="margin:14px 0 0;max-width:780px">Every sounding taken locally against a running vLLM server
+  (<code>dg-awq</code>, AWQ/compressed-tensors INT4, RTX 4090, <code>max_model_len 8000</code>, single-user). 6–10 casts per point;
+  every claim was confirmed by reading raw outputs, not aggregates — which is how the shoal got re-charted several times as we surveyed further.
+  Harnesses (timestamped runs, raw logs, Wilson intervals) live in <code>DIFFBENCH/</code> and <code>NEWBENCH/</code> with the full <code>REPORT.md</code>.</p>
 </div></footer>
 
 <script>
-const $ = (s,r=document)=>r.querySelector(s);
+const $=(s,r=document)=>r.querySelector(s);
 const NS="http://www.w3.org/2000/svg";
 function el(t,a={}){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
-const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function txt(x,y,s,o={}){const t=el("text",{x,y,"font-family":"IBM Plex Mono, monospace","font-size":o.fs||11,fill:o.fill||C.ink2,"text-anchor":o.a||"middle"});if(o.ls)t.setAttribute("letter-spacing",o.ls);if(o.w)t.setAttribute("font-weight",o.w);t.textContent=s;return t;}
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const C={ink:"#1B2A27",ink2:"#4A5A53",sand:"#CBB888",harbor:"#2E7D5B",shoal:"#C0392B",water:"#5E8C97",deep:"#34636D",gold:"#9C7320",line:"rgba(27,42,39,.18)",grid:"rgba(27,42,39,.10)"};
 
-const DATA = {
-  valley:[ {d:223,h:5},{d:418,h:5},{d:616,h:3},{d:816,h:1},{d:1012,h:0},
-           {d:1210,h:0},{d:1525,h:0},{d:2038,h:5},{d:3030,h:5},{d:4015,h:5} ],
-  coh:[ {kv:9,c:5},{kv:15,c:5},{kv:27,c:5},{kv:52,c:5},{kv:78,c:5},{kv:92,c:5} ],
-  temp:[ {t:"0.0",d:.654},{t:"0.5",d:.703},{t:"1.0",d:.620},{t:"1.5",d:.577},{t:"2.0",d:.684} ],
-  canvas:[ {n:128,ms:627},{n:224,ms:679},{n:256,ms:629},{n:288,ms:1200},{n:384,ms:1105},{n:512,ms:1293},{n:640,ms:1350} ],
-  osc:[ {f:"4.0k",h:1},{f:"4.3k",h:6},{f:"4.6k",h:6},{f:"4.9k",h:6},{f:"5.2k",h:1},
-        {f:"5.5k",h:0},{f:"5.8k",h:0},{f:"6.1k",h:1},{f:"6.4k",h:6},{f:"6.7k",h:6},
-        {f:"7.0k",h:6},{f:"7.3k",h:1},{f:"7.6k",h:0} ],
-  mitig:[ {k:"record sits in the dead zone",v:0,ok:false},
-          {k:"duplicate it ×3, still in the dead zone",v:0,ok:false},
-          {k:"a pointer to it, in a safe zone",v:0,ok:false},
-          {k:"its exact values, just before the question",v:8,ok:true},
-          {k:"its exact values, at the very top",v:8,ok:true},
-          {k:"a full copy in a safe zone",v:8,ok:true} ]
+const DATA={
+ valley:[{d:223,h:5},{d:418,h:5},{d:616,h:3},{d:816,h:1},{d:1012,h:0},{d:1210,h:0},{d:1525,h:0},{d:2038,h:5},{d:3030,h:5},{d:4015,h:5}],
+ osc:[{f:"4.0k",h:1},{f:"4.3k",h:6},{f:"4.6k",h:6},{f:"4.9k",h:6},{f:"5.2k",h:1},{f:"5.5k",h:0},{f:"5.8k",h:0},{f:"6.1k",h:1},{f:"6.4k",h:6},{f:"6.7k",h:6},{f:"7.0k",h:6},{f:"7.3k",h:1},{f:"7.6k",h:0}],
+ coh:[{kv:9,c:5},{kv:15,c:5},{kv:27,c:5},{kv:52,c:5},{kv:78,c:5},{kv:92,c:5}],
+ temp:[.654,.703,.620,.577,.684], tempL:["0","","1","","2"],
+ canvas:[{n:128,ms:627},{n:224,ms:679},{n:256,ms:629},{n:288,ms:1200},{n:384,ms:1105},{n:512,ms:1293},{n:640,ms:1350}],
+ terse:[{k:"only the number",v:1,ok:false},{k:"a short sentence",v:8,ok:true}],
+ passage:[{k:"records ON the shoal",pct:25,ok:false},{k:"records routed around it",pct:95,ok:true}]
 };
-const C={cyan:"#3FE0CC",amber:"#F6A93B",crimson:"#FF5470",violet:"#8B7CF6",muted:"#8A92A8",grid:"rgba(255,255,255,.07)"};
-const cFor=h=> h>=5?C.cyan : h>=3?C.amber : h>=1?"#F67A4B" : C.crimson;
 
-function drawValley(){
-  const W=980,H=300,pl=52,pr=20,pt=24,pb=46;
-  const xmax=4200, x=v=>pl+(v/xmax)*(W-pl-pr), y=v=>pt+(1-v/5)*(H-pt-pb);
+/* ---------- HERO COASTLINE ---------- */
+function drawCoast(){
+  const W=1000,H=320,pl=40,pr=40,top=30,bot=70,sea=H-bot;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%",preserveAspectRatio:"xMidYMid meet"});
-  svg.appendChild(el("rect",{x:x(560),y:pt,width:x(1720)-x(560),height:H-pt-pb,fill:"rgba(255,84,112,.10)"}));
-  const dl=el("text",{x:(x(560)+x(1720))/2,y:pt+18,"text-anchor":"middle",fill:C.crimson,
-    "font-family":"IBM Plex Mono, monospace","font-size":12,"letter-spacing":"2"});dl.textContent="DEAD ZONE";svg.appendChild(dl);
-  for(let g=0;g<=5;g++){const yy=y(g);
-    svg.appendChild(el("line",{x1:pl,y1:yy,x2:W-pr,y2:yy,stroke:C.grid}));
-    const tl=el("text",{x:pl-10,y:yy+4,"text-anchor":"end","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});
-    tl.textContent=(g*20)+"%";svg.appendChild(tl);}
-  [200,1000,2000,3000,4000].forEach(v=>{const tx=el("text",{x:x(v),y:H-16,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});tx.textContent=v;svg.appendChild(tx);});
-  const xtitle=el("text",{x:W/2,y:H-1,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});
-  xtitle.textContent="tokens between the fact and your question  →";svg.appendChild(xtitle);
-  const zr=el("text",{x:x(330),y:pt+18,"text-anchor":"middle",fill:C.cyan,"font-family":"IBM Plex Mono, monospace","font-size":11});zr.textContent="RECENCY";svg.appendChild(zr);
-  const zp=el("text",{x:x(3100),y:pt+18,"text-anchor":"middle",fill:C.cyan,"font-family":"IBM Plex Mono, monospace","font-size":11});zp.textContent="PRIMACY";svg.appendChild(zp);
-  const pts=DATA.valley.map(p=>[x(p.d),y(p.h)]);
-  const path=el("path",{d:"M"+pts.map(p=>p.join(",")).join(" L"),fill:"none",stroke:C.cyan,"stroke-width":2.6,"stroke-linejoin":"round","stroke-linecap":"round"});svg.appendChild(path);
-  DATA.valley.forEach(p=>{const c=el("circle",{cx:x(p.d),cy:y(p.h),r:5,fill:cFor(p.h),stroke:"#0A0D16","stroke-width":2});
-    const tt=el("title");tt.textContent=`${p.d} tokens away → ${p.h}/5 found`;c.appendChild(tt);svg.appendChild(c);});
-  $("#valley").appendChild(svg);
-  if(!reduce){const L=path.getTotalLength();path.style.strokeDasharray=L;path.style.strokeDashoffset=L;
-    path.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:1700,easing:"cubic-bezier(.4,.1,.2,1)",fill:"forwards"});}
+  // sea
+  svg.appendChild(el("rect",{x:pl,y:top,width:W-pl-pr,height:sea-top,fill:"#DCE6E4"}));
+  for(let y=top+14;y<sea;y+=15) svg.appendChild(el("line",{x1:pl,y1:y,x2:W-pr,y2:y,stroke:"rgba(52,99,109,.10)","stroke-width":1}));
+  // distance -> x (question harbour at right)
+  const xmax=4400, x=d=>(W-pr-90)-(d/xmax)*((W-pr-90)-(pl+90));
+  // left headland (START / primacy)
+  svg.appendChild(el("path",{d:`M${pl},${top} L${pl+120},${top} Q${pl+150},${(top+sea)/2} ${pl+120},${sea} L${pl},${sea} Z`,fill:C.sand,opacity:.9}));
+  svg.appendChild(el("path",{d:`M${pl+120},${top} Q${pl+150},${(top+sea)/2} ${pl+120},${sea}`,fill:"none",stroke:C.ink,"stroke-width":1.5,opacity:.5}));
+  // right harbour (QUESTION / recency)
+  svg.appendChild(el("path",{d:`M${W-pr},${top} L${W-pr-110},${top} Q${W-pr-150},${(top+sea)/2} ${W-pr-110},${sea} L${W-pr},${sea} Z`,fill:C.harbor,opacity:.85}));
+  // shoal at ~1000 tok before question
+  const sx=x(1050);
+  svg.appendChild(el("ellipse",{cx:sx,cy:(top+sea)/2+6,rx:62,ry:42,fill:"rgba(192,57,43,.16)",stroke:C.shoal,"stroke-dasharray":"4 4","stroke-width":1.3}));
+  for(let r=20;r<=62;r+=14) svg.appendChild(el("ellipse",{cx:sx,cy:(top+sea)/2+6,rx:r,ry:r*.68,fill:"none",stroke:"rgba(192,57,43,.28)","stroke-width":1}));
+  // soundings (retrieval) along mid-water
+  DATA.valley.forEach(p=>{const xx=x(p.d),yy=(top+sea)/2+6 + (p.h>=3?0:18);
+    const safe=p.h>=3; const col=safe?C.deep:C.shoal;
+    svg.appendChild(el("circle",{cx:xx,cy:yy,r:safe?4:5,fill:col,stroke:"#EEF2E9","stroke-width":1.5}));
+    svg.appendChild(txt(xx,yy-9,Math.round(p.h/5*100)+"",{fs:10.5,fill:col,w:600}));});
+  // safe route (dashed) hugging shores, arcing over the shoal
+  svg.appendChild(el("path",{d:`M${W-pr-95},${sea-14} C${sx+40},${sea-14} ${sx+30},${top+22} ${sx},${top+22} C${sx-30},${top+22} ${sx-40},${sea-14} ${pl+135},${sea-14}`,
+    fill:"none",stroke:C.gold,"stroke-width":2,"stroke-dasharray":"7 5",opacity:.85}));
+  svg.appendChild(txt(sx,top+14,"safe route",{fs:10,fill:C.gold,w:600,ls:"1"}));
+  // labels
+  svg.appendChild(txt(pl+58,sea+22,"START",{fs:11,fill:C.ink,w:600,ls:"1.5"}));
+  svg.appendChild(txt(pl+58,sea+38,"primacy",{fs:10,fill:C.ink2}));
+  svg.appendChild(txt(W-pr-55,sea+22,"⚓ THE QUESTION",{fs:11,fill:C.harbor,w:600,a:"end"}));
+  svg.appendChild(txt(W-pr-55,sea+38,"recency",{fs:10,fill:C.ink2,a:"end"}));
+  svg.appendChild(txt(sx,sea+22,"SHOAL",{fs:11,fill:C.shoal,w:600,ls:"1.5"}));
+  svg.appendChild(txt(sx,sea+38,"~1000 tok out",{fs:10,fill:C.shoal}));
+  svg.appendChild(txt((pl+W-pr)/2,H-8,"◀  distance from your question  ·  open water  ▶",{fs:11,fill:C.ink2}));
+  // compass rose
+  const cx=pl+60,cy=top+34;
+  svg.appendChild(el("circle",{cx,cy,r:15,fill:"none",stroke:C.ink,"stroke-width":1,opacity:.5}));
+  svg.appendChild(el("path",{d:`M${cx},${cy-15} L${cx+4},${cy} L${cx},${cy+15} L${cx-4},${cy} Z`,fill:C.shoal,opacity:.8}));
+  svg.appendChild(txt(cx,cy-19,"N",{fs:9,fill:C.ink2}));
+  $("#coast").appendChild(svg);
 }
 
-function drawCoh(){
-  const W=460,H=230,pl=46,pr=16,pt=20,pb=40;
-  const x=v=>pl+(v/100)*(W-pl-pr), y=v=>pt+(1-v/5)*(H-pt-pb);
-  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
-  for(let g=0;g<=5;g++){const yy=y(g);svg.appendChild(el("line",{x1:pl,y1:yy,x2:W-pr,y2:yy,stroke:C.grid}));
-    const t=el("text",{x:pl-8,y:yy+4,"text-anchor":"end","font-family":"IBM Plex Mono, monospace","font-size":10,fill:C.muted});t.textContent=(g*20)+"%";svg.appendChild(t);}
-  [9,27,52,78,92].forEach(v=>{const t=el("text",{x:x(v),y:H-14,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":10,fill:C.muted});t.textContent=v+"%";svg.appendChild(t);});
-  const xt=el("text",{x:W/2,y:H-1,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":10,fill:C.muted});xt.textContent="context fill →";svg.appendChild(xt);
-  const pts=DATA.coh.map(p=>[x(p.kv),y(p.c)]);
-  svg.appendChild(el("path",{d:"M"+pts.map(p=>p.join(",")).join(" L")+` L${x(92)},${y(0)} L${x(9)},${y(0)} Z`,fill:"rgba(63,224,204,.10)"}));
-  const path=el("path",{d:"M"+pts.map(p=>p.join(",")).join(" L"),fill:"none",stroke:C.cyan,"stroke-width":2.6});svg.appendChild(path);
-  DATA.coh.forEach(p=>{svg.appendChild(el("circle",{cx:x(p.kv),cy:y(p.c),r:4.5,fill:C.cyan,stroke:"#121626","stroke-width":1.5}));});
-  const tag=el("text",{x:x(50),y:y(5)-10,"text-anchor":"middle",fill:C.cyan,"font-family":"Space Grotesk, sans-serif","font-size":13,"font-weight":600});tag.textContent="flat at 100%";svg.appendChild(tag);
-  $("#coh").appendChild(svg);
-  if(!reduce){const L=path.getTotalLength();path.style.strokeDasharray=L;path.style.strokeDashoffset=L;
-    path.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:1300,easing:"ease-out",fill:"forwards"});}
-}
-
-function drawTemp(){
-  const W=300,H=150,pb=26,pt=10,pl=10,pr=10,bw=(W-pl-pr)/DATA.temp.length;
-  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
-  const y=v=>pt+(1-v/1.0)*(H-pt-pb);
-  svg.appendChild(el("line",{x1:pl,y1:y(0),x2:W-pr,y2:y(0),stroke:C.grid}));
-  DATA.temp.forEach((p,i)=>{const bx=pl+i*bw+bw*0.18,bwi=bw*0.64;
-    svg.appendChild(el("rect",{x:bx,y:y(p.d),width:bwi,height:y(0)-y(p.d),fill:C.violet,opacity:.85,rx:3}));
-    const t=el("text",{x:bx+bwi/2,y:H-9,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":10,fill:C.muted});t.textContent=p.t;svg.appendChild(t);});
-  $("#temp").appendChild(svg);
-  const cap=document.createElement("div");cap.style.cssText="font-family:IBM Plex Mono,monospace;font-size:10px;color:#5A6178;text-align:center;margin-top:4px";
-  cap.textContent="output spread · temp 0.0 → 2.0 (flat)";$("#temp").appendChild(cap);
-}
-
-function drawCanvas(){
-  const W=300,H=150,pb=26,pt=12,pl=10,pr=10,bw=(W-pl-pr)/DATA.canvas.length;
-  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
-  const y=v=>pt+(1-v/1450)*(H-pt-pb);
-  svg.appendChild(el("line",{x1:pl,y1:y(0),x2:W-pr,y2:y(0),stroke:C.grid}));
-  DATA.canvas.forEach((p,i)=>{const bx=pl+i*bw+bw*0.16,bwi=bw*0.68,col=p.n<=256?C.cyan:C.amber;
-    svg.appendChild(el("rect",{x:bx,y:y(p.ms),width:bwi,height:y(0)-y(p.ms),fill:col,opacity:.9,rx:2.5}));
-    const t=el("text",{x:bx+bwi/2,y:H-9,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":9,fill:C.muted});t.textContent=p.n;svg.appendChild(t);});
-  const bxLine=pl+3*bw;
-  svg.appendChild(el("line",{x1:bxLine,y1:pt-2,x2:bxLine,y2:y(0),stroke:C.crimson,"stroke-width":1,"stroke-dasharray":"3 3",opacity:.7}));
-  const bl=el("text",{x:bxLine+4,y:pt+8,fill:C.crimson,"font-family":"IBM Plex Mono, monospace","font-size":9});bl.textContent="256→2nd block";svg.appendChild(bl);
-  $("#canvas").appendChild(svg);
-  const cap=document.createElement("div");cap.style.cssText="font-family:IBM Plex Mono,monospace;font-size:10px;color:#5A6178;text-align:center;margin-top:4px";
-  cap.textContent="latency (ms) by forced output length";$("#canvas").appendChild(cap);
-}
-
-function drawOsc(){
-  const W=900,H=260,pl=44,pr=16,pt=24,pb=52,n=DATA.osc.length;
-  const bw=(W-pl-pr)/n, y=v=>pt+(1-v/6)*(H-pt-pb);
+/* generic line chart for depth profiles (light) */
+function lineChart(mount,data,opts){
+  const W=opts.W||960,H=opts.H||280,pl=52,pr=20,pt=22,pb=46;
+  const x=v=>pl+(v/opts.xmax)*(W-pl-pr), y=v=>pt+(1-v/opts.ymax)*(H-pt-pb);
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%",preserveAspectRatio:"xMidYMid meet"});
-  for(let g=0;g<=6;g+=3){const yy=y(g);
+  if(opts.band) svg.appendChild(el("rect",{x:x(opts.band[0]),y:pt,width:x(opts.band[1])-x(opts.band[0]),height:H-pt-pb,fill:"rgba(192,57,43,.09)"}));
+  for(let g=0;g<=opts.ymax;g+=opts.ystep){const yy=y(g);
     svg.appendChild(el("line",{x1:pl,y1:yy,x2:W-pr,y2:yy,stroke:C.grid}));
-    const t=el("text",{x:pl-8,y:yy+4,"text-anchor":"end","font-family":"IBM Plex Mono, monospace","font-size":11,fill:C.muted});t.textContent=Math.round(g/6*100)+"%";svg.appendChild(t);}
-  DATA.osc.forEach((p,i)=>{const bx=pl+i*bw+bw*0.16,bwi=bw*0.68,ok=p.h>=4;
-    const r=el("rect",{x:bx,y:y(p.h),width:bwi,height:y(0)-y(p.h),rx:3,fill:ok?C.cyan:C.crimson,opacity:ok?.92:.5});
-    if(p.h===0){r.setAttribute("height",2);r.setAttribute("y",y(0)-2);}
-    const tt=el("title");tt.textContent=`${p.f} prompt → ${p.h}/6 found`;r.appendChild(tt);svg.appendChild(r);
-    const t=el("text",{x:bx+bwi/2,y:H-30,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":10,fill:C.muted});t.textContent=p.f;svg.appendChild(t);});
-  const xt=el("text",{x:W/2,y:H-10,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":11.5,fill:"#C5CBDA"});
-  xt.textContent="total prompt length  (fact pinned at 1000 tokens from the question the whole time)";svg.appendChild(xt);
-  $("#osc").appendChild(svg);
+    svg.appendChild(txt(pl-9,yy+4,Math.round(g/opts.ymax*100)+"%",{a:"end",fill:C.ink2}));}
+  (opts.xticks||[]).forEach(v=>svg.appendChild(txt(x(v),H-16,v+"",{fill:C.ink2})));
+  if(opts.xlabel) svg.appendChild(txt(W/2,H-1,opts.xlabel,{fill:C.ink2}));
+  const pts=data.map(p=>[x(p[0]),y(p[1])]);
+  if(opts.fill) svg.appendChild(el("path",{d:"M"+pts.map(p=>p.join(",")).join(" L")+` L${x(data[data.length-1][0])},${y(0)} L${x(data[0][0])},${y(0)} Z`,fill:"rgba(52,99,109,.10)"}));
+  const path=el("path",{d:"M"+pts.map(p=>p.join(",")).join(" L"),fill:"none",stroke:C.deep,"stroke-width":2.6,"stroke-linejoin":"round","stroke-linecap":"round"});svg.appendChild(path);
+  data.forEach(p=>{const col=opts.dot?opts.dot(p[1]):C.deep;svg.appendChild(el("circle",{cx:x(p[0]),cy:y(p[1]),r:4.5,fill:col,stroke:"#F2F5ED","stroke-width":1.5}));});
+  if(opts.zones)opts.zones.forEach(z=>svg.appendChild(txt(x(z.x),pt+15,z.t,{fill:z.c||C.harbor,fs:11,w:600})));
+  mount.appendChild(svg);
+  if(!reduce){const L=path.getTotalLength();path.style.strokeDasharray=L;path.style.strokeDashoffset=L;
+    path.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:1500,easing:"cubic-bezier(.4,.1,.2,1)",fill:"forwards"});}
 }
+function drawValley(){lineChart($("#valley"),DATA.valley.map(p=>[p.d,p.h]),{xmax:4200,ymax:5,ystep:1,band:[560,1720],
+  xticks:[200,1000,2000,3000,4000],xlabel:"tokens between the fact and your question  →",
+  dot:h=>h>=3?C.deep:C.shoal, zones:[{x:330,t:"RECENCY",c:C.harbor},{x:1080,t:"SHOAL",c:C.shoal},{x:3100,t:"PRIMACY",c:C.harbor}]});}
+function drawCoh(){lineChart($("#coh"),DATA.coh.map(p=>[p.kv,p.c]),{W:460,H:230,xmax:100,ymax:5,ystep:1,fill:true,
+  xticks:[9,27,52,78,92],xlabel:"context fill →",zones:[{x:50,t:"flat — quality holds",c:C.harbor}]});}
 
-function drawMitig(){
-  const root=$("#mitig");
-  const wrap=document.createElement("div");
-  wrap.style.cssText="display:flex;flex-direction:column;gap:13px;margin:4px 0 2px";
-  DATA.mitig.forEach((m,i)=>{
+/* vertical bars (light) */
+function vbars(mount,items,opts){
+  const W=opts.W||900,H=opts.H||(opts.compact?150:240),pl=opts.compact?28:44,pr=12,pt=opts.compact?12:22,pb=opts.compact?24:46,n=items.length;
+  const bw=(W-pl-pr)/n,y=v=>pt+(1-v/opts.ymax)*(H-pt-pb);
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%",preserveAspectRatio:"xMidYMid meet"});
+  svg.appendChild(el("line",{x1:pl,y1:y(0),x2:W-pr,y2:y(0),stroke:C.line}));
+  if(!opts.compact)for(let g=0;g<=opts.ymax;g+=opts.ystep){const yy=y(g);svg.appendChild(el("line",{x1:pl,y1:yy,x2:W-pr,y2:yy,stroke:C.grid}));
+    svg.appendChild(txt(pl-9,yy+4,opts.fmt?opts.fmt(g):g,{a:"end",fill:C.ink2}));}
+  items.forEach((it,i)=>{const bx=pl+i*bw+bw*0.18,bwi=bw*0.64,col=opts.col(it);
+    svg.appendChild(el("rect",{x:bx,y:y(it.v),width:bwi,height:y(0)-y(it.v),rx:3,fill:col,opacity:it.dim?.45:.9}));
+    svg.appendChild(txt(bx+bwi/2,H-(opts.compact?9:9),it.l,{fs:opts.compact?9:10,fill:C.ink2}));});
+  if(opts.marker!=null){const mx=pl+opts.marker*bw;svg.appendChild(el("line",{x1:mx,y1:pt-2,x2:mx,y2:y(0),stroke:C.shoal,"stroke-dasharray":"3 3","stroke-width":1,opacity:.7}));}
+  mount.appendChild(svg);
+}
+function drawOsc(){vbars($("#osc"),DATA.osc.map(p=>({v:p.h,l:p.f})),{ymax:6,ystep:3,fmt:g=>Math.round(g/6*100)+"%",
+  col:it=>it.v>=4?C.harbor:C.shoal});}
+function drawTemp(){vbars($("#temp"),DATA.temp.map((d,i)=>({v:d,l:DATA.tempL[i]})),{ymax:1,compact:true,col:()=>C.water});}
+function drawCanvas(){vbars($("#canvas"),DATA.canvas.map(p=>({v:p.ms,l:p.n})),{ymax:1450,compact:true,marker:3,col:it=>it.l<=256?C.harbor:C.gold});}
+
+/* horizontal bars */
+function hbars(mount,items,opts){
+  const wrap=document.createElement("div");wrap.style.cssText="display:flex;flex-direction:column;gap:14px";
+  items.forEach((m,i)=>{
     const row=document.createElement("div");
-    const top=document.createElement("div");
-    top.style.cssText="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px";
-    top.innerHTML=`<span class="mono" style="font-size:13.5px;color:${m.ok?'#ECEFF7':'#8A92A8'}">${m.k}</span>`+
-      `<span style="font-family:var(--disp);font-weight:600;font-size:14px;color:${m.ok?C.cyan:C.crimson}">${m.v}/8 found</span>`;
-    const track=document.createElement("div");
-    track.style.cssText="height:26px;background:#070A11;border:1px solid rgba(255,255,255,.10);border-radius:7px;overflow:hidden";
-    const fill=document.createElement("div");
-    fill.style.cssText=`height:100%;border-radius:6px;background:${m.ok?C.cyan:C.crimson};opacity:${m.ok?'.92':'.45'};width:0;transition:width 1s cubic-bezier(.2,.7,.2,1) ${i*90}ms`;
+    const top=document.createElement("div");top.style.cssText="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px";
+    top.innerHTML=`<span class="mono" style="font-size:13px;color:${m.ok?'#1B2A27':'#4A5A53'}">${m.k}</span><span style="font-family:var(--disp);font-weight:600;font-size:14px;color:${m.ok?C.harbor:C.shoal}">${opts.val(m)}</span>`;
+    const track=document.createElement("div");track.style.cssText="height:24px;background:var(--paper);border:1px solid var(--line);border-radius:5px;overflow:hidden";
+    const fill=document.createElement("div");fill.style.cssText=`height:100%;border-radius:4px;background:${m.ok?C.harbor:C.shoal};opacity:${m.ok?.9:.5};width:0;transition:width 1s cubic-bezier(.2,.7,.2,1) ${i*110}ms`;
     track.appendChild(fill);row.appendChild(top);row.appendChild(track);wrap.appendChild(row);
-    requestAnimationFrame(()=>setTimeout(()=>fill.style.width=(m.v/8*100||1.5)+"%",80));
+    requestAnimationFrame(()=>setTimeout(()=>fill.style.width=Math.max(opts.pct(m),1.5)+"%",80));
   });
-  root.appendChild(wrap);
-  const cap=document.createElement("div");
-  cap.style.cssText="font-family:IBM Plex Mono,monospace;font-size:11.5px;color:#5A6178;margin-top:14px";
-  cap.innerHTML="↑ same fact buried in a dead-zone position · 8 trials each · only the value in a safe zone is readable";
-  root.appendChild(cap);
+  mount.appendChild(wrap);
 }
+function drawPassage(){hbars($("#passageChart"),DATA.passage,{val:m=>m.pct+"% recall",pct:m=>m.pct});}
+function drawTerse(){hbars($("#terse"),DATA.terse.map(t=>({k:t.k,ok:t.ok,v:t.v})),{val:m=>m.ok?`${m.v}/8 correct`:`${m.v}/8 (7 empty)`,pct:m=>m.v/8*100});}
 
-function noiseField(){
-  if(reduce) return;
-  const cv=$("#noise"),ctx=cv.getContext("2d");let w,h,pts;
-  function size(){w=cv.width=cv.offsetWidth;h=cv.height=cv.offsetHeight;
-    pts=Array.from({length:Math.min(90,Math.floor(w/14))},()=>({x:Math.random()*w,y:Math.random()*h,
-      vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18,r:Math.random()*1.6+.4}));}
-  size();addEventListener("resize",size);
-  (function loop(){ctx.clearRect(0,0,w,h);
-    for(const p of pts){p.x+=p.vx;p.y+=p.vy;
-      if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fillStyle="rgba(139,124,246,.5)";ctx.fill();}
-    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
-      const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=dx*dx+dy*dy;
-      if(d<8000){ctx.strokeStyle="rgba(63,224,204,"+(0.12*(1-d/8000))+")";ctx.lineWidth=.5;
-        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}
-    requestAnimationFrame(loop);})();
-}
-
-function fillBars(){document.querySelectorAll(".fill[data-w]").forEach(f=>{
-  const w=f.dataset.w+"%"; if(reduce){f.style.width=w;return;}
-  requestAnimationFrame(()=>{setTimeout(()=>f.style.width=w,120);});});}
-
-drawValley();drawCoh();drawTemp();drawCanvas();drawOsc();drawMitig();noiseField();fillBars();
+drawCoast();drawValley();drawOsc();drawCoh();drawTemp();drawCanvas();drawPassage();drawTerse();
 </script>
 </body>
 </html>

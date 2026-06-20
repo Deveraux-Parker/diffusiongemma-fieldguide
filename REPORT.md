@@ -333,6 +333,38 @@ architecture: treat the raw middle as **storage**; treat a top/tail exact-value 
 model's **readable retrieval surface**; validate exact IDs with a checksum (the failure mode
 is confident confabulation, so validation is mandatory).
 
+---
+
+# Part 7 — Engineered layout: you CAN route around the shoal (NEWBENCH)
+
+Earlier I called the "pad the dead zone with junk" idea a non-starter. It isn't.
+`NEWBENCH/engineered_layout_benchmark.py` (dead-phase fill 5500, lorem-ipsum junk,
+distinctive RECORD lines):
+
+```
+Stage A — single record vs distance (the band is sharp & narrow):
+  dist:  250  500  750  1000 1250 1500 1800 2200 3000 4200
+  hits:  6/6  6/6  2/6  0/6  0/6  5/6  6/6  6/6  6/6  6/6   (DEAD ~750-1300)
+
+Stage B — 4 records, retrieved via "list all codes":
+  records ON the shoal (dist 700/950/1200/1450):  10/40 codes, all-4 0/10
+  records routed around it (dist 250/420/1800/2400, lorem left on the shoal):
+                                                  38/40 codes, all-4 9/10
+```
+
+Because the dead band is anchored ~1000 tokens **before the question** (not at an
+absolute position), the fix is trivial and length-independent: **reserve the
+~600–1500-tokens-before-the-question window as a filler buffer** and place real
+records in recency (last ~500 tok) or the bulk (>1500 tok back). Recall goes from
+~25% → 95% at the same document length. Filler content and needle distinctiveness are
+NOT the driver (`interference_2x2.py`: at the dead position, telemetry/lorem filler and
+blended/distinct needles all fail ~equally) — it's positional, so it's navigable.
+
+Note on the earlier "comb looked all-safe with lorem" (`deadzone_dodge_benchmark.py`):
+that was a read error — at that length the single dead tooth sat ~1000 tok before the
+question and every other sampled position was simply outside the band. Lorem did not
+remove the shoal.
+
 ## Files
 - `bench_kv.py` / `results.json` / `raw.jsonl` — Part 1 (retrieval)
 - `bench_coherence.py` / `results_coherence.json` / `raw_coherence.jsonl` — Part 2 (coherence + shaping)
