@@ -136,7 +136,7 @@ footer code{font-family:var(--mono);color:var(--ink);background:#EFF2EE;padding:
   <h2>It writes, computes, and calls tools.</h2></div>
   <p class="sub">The same model that reads your context cleanly also generates it. Long outputs stay coherent and non-repetitive, multilingual is natural, and tool calls come back as valid JSON.</p>
   <div class="grid3">
-    <div class="feat"><div class="tag">long outputs</div><h3>Coherent at length</h3><p>An 800-token technical explainer came back fully coherent and non-repetitive in 2.6 s. It denoises 256-token canvases, so throughput <i>rises</i> with output length.</p><div class="metric">800 tok @ 305 tok/s</div></div>
+    <div class="feat"><div class="tag">long outputs</div><h3>Coherent at length</h3><p>A 900-token technical explainer came back fully coherent and non-repetitive (uniq-8gram 1.00). It denoises 256-token canvases, so throughput <i>rises</i> with output length.</p><div class="metric">900 tok @ ~430 tok/s</div></div>
     <div class="feat"><div class="tag">tool use</div><h3>Clean tool calls</h3><p>Single and parallel tool calls and full round-trips all produced valid JSON with the right finish reason.</p><div class="metric">valid · parallel ✓</div></div>
     <div class="feat"><div class="tag">multilingual</div><h3>Natural in many languages</h3><p>Japanese, Chinese, and French generations are fluent and idiomatic.</p><div class="metric">JA · ZH · FR ✓</div></div>
   </div>
@@ -162,7 +162,7 @@ footer code{font-family:var(--mono);color:var(--ink);background:#EFF2EE;padding:
       </tbody>
     </table>
   </div>
-  <div class="callout note"><b>Generation is content-dependent.</b> The diffusion sampler runs more denoising steps for less-predictable text, so decode is a range — ~525–575 tok/s for steady prose, down to ~305 tok/s for dense, high-entropy output. Throughput <i>rises</i> with output length (it works in 256-token canvases). fp8 KV costs no speed vs fp16 — it just buys you more context.</div>
+  <div class="callout note"><b>Generation is content-dependent.</b> The diffusion sampler runs more denoising steps for less-predictable text, so decode is a range — ~525–575 tok/s for steady prose, ~430 tok/s for dense, high-entropy output. Throughput <i>rises</i> with output length (it works in 256-token canvases). fp8 KV costs no speed vs fp16 — it just buys you more context.</div>
 </section>
 
 <!-- 3 PROMPTING -->

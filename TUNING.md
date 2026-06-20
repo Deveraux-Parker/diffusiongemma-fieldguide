@@ -96,9 +96,9 @@ context    prefill (TTFT)   prefill rate    generation (decode)
   lower only because a fixed first-canvas cost dominates such a short prompt.
 - **Generation is content-dependent.** The sampler runs more denoising steps for less-
   predictable text, so decode is a *range*: **~525–575 tok/s** for steady prose, down to
-  **~305 tok/s** for dense, high-entropy output (e.g. a packed technical explainer; that 800-token
-  output was fully coherent, uniq-8gram 1.00). Throughput *rises* with output length (256-token
-  canvases), the opposite of autoregressive.
+  **~430 tok/s** for dense, high-entropy output (e.g. a packed 900-token technical explainer —
+  fully coherent, uniq-8gram 1.00). Throughput *rises* with output length (256-token canvases),
+  the opposite of autoregressive.
 - **fp8 vs fp16 KV: comparable decode** (both ~525–595 tok/s; differences are within
   measurement noise — fp8 is *not* a speed tax). fp8's real benefit is memory → more context.
   (Earlier "219/305/+38%" style figures included prefill or were prefix-warmed/noisy — use the
