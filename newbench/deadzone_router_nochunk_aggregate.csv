@@ -1,0 +1,10 @@
+suite,strategy,n,mean_exact,min_exact,mean_lenient,pass_rate_exact_1,mean_dead_count,mean_pad_tokens,mean_prompt_tokens,mean_elapsed_sec
+multi,all_registry,4,1.0,1.0,1.0,1.0,1,0,5734.5,0.24897911899461178
+multi,ballast_router,4,1.0,1.0,1.0,1.0,0,1216,6883.25,0.6732275292524719
+multi,combo_original_dead_registry,4,1.0,1.0,1.0,1.0,0,1216,6923.25,0.31688527000369504
+multi,dead_only_registry,4,1.0,1.0,1.0,1.0,1,0,5689.25,0.3116392507508863
+multi,raw_mixed,4,1.0,1.0,1.0,1.0,1,0,5649.25,0.8040735524919
+single,ballast_router,6,1.0,1.0,1.0,1.0,0,1301.3333333333333,6945.5,0.3947315086600914
+single,combo_router,6,1.0,1.0,1.0,1.0,0,1301.3333333333333,6984.5,0.14661713533860166
+single,raw_bad,6,1.0,1.0,1.0,1.0,1,0,5629.5,0.7259734823358789
+single,tail_registry,6,1.0,1.0,1.0,1.0,1,0,5668.5,0.1482405415008543

@@ -414,3 +414,61 @@ retrieval" and "shoal drifts with the tide" framings — retrieval is determinis
 - `bench_quirks.py` / `results_quirks.json` / `raw_quirks.jsonl` — Part 3 (quirks, Wave 1)
 - `bench_wave2.py` / `results_wave2.json` / `raw_wave2.jsonl` — Wave 2 (cliff, canvas, temp, JSON, honesty)
 - `bench_wave3.py` / `results_wave3.json` / `raw_wave3.jsonl` — Part 4 (dead-zone mitigation)
+
+---
+
+# Part 9 — CORRECTION: dead zone was a vLLM chunked-prefill artifact
+
+Part 8 correctly described a reproducible 1024-block/parity failure mode, but the
+cause is now corrected: it was not intrinsic DiffusionGemma retrieval behavior.
+It was caused by the old/effective vLLM prefill serving shape.
+
+Old failing setup:
+
+```
+compile_ranges_endpoints: [2048]
+chunked prefill effective range: 2048
+```
+
+Fixed setup:
+
+```
+--max-num-batched-tokens 8192
+compile_ranges_endpoints: [8192]
+```
+
+With the fixed setup, the exact same shift probe that previously produced
+dead/alive/dead block parity now passes everywhere:
+
+```
+pad K:      0    256   512   768   1024  1280  1536  2048
+old hits:   0    1     0     10    12    12    12    0     /12
+new hits:   12   12    12    12    12    12    12    12    /12
+```
+
+Second confirmation, the engineered-layout sweep:
+
+```
+old dist 1000: 0/6      new dist 1000: 6/6
+old dist 1250: 0/6      new dist 1250: 6/6
+old IN_DEADBAND: 10/40  new IN_DEADBAND: 40/40
+```
+
+Third confirmation, the router benchmark:
+
+```
+old raw_bad single: 0/12 exact       new raw_bad single: 6/6 exact
+old raw_mixed multi: 0.438 mean      new raw_mixed multi: 1.000 mean
+```
+
+Corrected conclusion: the 1024-block law is a serving-artifact signature for the
+2048 prefill compile range. For this local single-user 8k setup, launch with
+`--max-num-batched-tokens 8192` and verify startup logs show
+`compile_ranges_endpoints: [8192]`.
+
+Files:
+
+- `NEWBENCH/SERVING_CONFIG_FINDING.md`
+- `NEWBENCH/shift-probe-20260620-083422`
+- `NEWBENCH/deadzone-router-20260620-083856`
+- `NEWBENCH/engineered-layout-20260620-083948`

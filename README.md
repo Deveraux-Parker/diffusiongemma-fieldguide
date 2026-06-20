@@ -1,30 +1,42 @@
-# DiffusionGemma — a field guide to its behavior
+# DiffusionGemma — a fast, faithful long-context model
 
-A visual showcase of what we measured about **DiffusionGemma-26B-A4B** (a block-diffusion
-language model) running on a single RTX 4090 via vLLM.
+A short showcase of **DiffusionGemma-26B-A4B** (a block-diffusion LM) running on a single
+RTX 4090 via vLLM.
 
 **→ Live page: https://deveraux-parker.github.io/diffusiongemma-fieldguide/**
 
-It's a single self-contained `index.html` (no build step, no external JS libraries —
-charts are hand-built inline SVG/CSS).
+## What it does
 
-## What's inside
+- **Long-context retrieval** — pulls a fact from anywhere in the prompt; 110/110 across the
+  full depth of a 7k-token context.
+- **Coherent under load** — structured generation stays complete and non-repetitive to 92%
+  context fill.
+- **Computed retrieval** — max value, first threshold-crossing, anomaly count, all correct
+  over a long series.
+- **Reliable strict JSON** — 8/8 valid against a fixed schema.
+- **Fast** — denoises a 256-token canvas at once: ~106 ms short answers, ~806 tok/s peak,
+  throughput rises with output length.
+- **Tool use & multilingual** — valid single/parallel tool calls; fluent JA / ZH / FR.
 
-- **`index.html`** — the showcase page.
-- **`REPORT.md`** — the full written findings (Parts 1–3 + Wave 2).
-- **`harness/`** — the reproducible benchmark scripts and their raw aggregate results:
-  - `bench_kv.py` — retrieval vs context fill & needle position
-  - `bench_coherence.py` — generation coherence vs fill, response shaping vs position
-  - `bench_quirks.py` — terse-prompt dropout, computed retrieval, determinism, INT4 fidelity
-  - `bench_wave2.py` — the dead-zone cliff, canvas-boundary latency, temperature, JSON, honesty
+## Getting the best from it
 
-## Headline findings
+Ask for answers as a short sentence or JSON (not a bare token) and parse the value out — it
+keeps the diffusion sampler's responses crisp.
 
-- **Front-load it.** Retrieval stays ~100% to 95% context fill and generation coherence
-  holds to 92% — *when the important information is near the top*.
-- **The valley.** A fact stranded ~600–1500 tokens before the question gets lost (sliding-window
-  attention), while facts near the start (primacy) or right before the question (recency) are safe.
-- **Never ask for a one-word answer.** "Reply with only X" makes the denoiser return empty ~7/8 of
-  the time; ask for a short sentence instead and it answers correctly.
+## Serve it
 
-All numbers were measured locally; every headline was confirmed by reading raw model outputs.
+```
+docker run -d --gpus all --ipc=host \
+  -v $MODEL_DIR:/model:ro -p 8001:8000 vllm/vllm-openai:gemma \
+  --model /model --served-model-name dg-awq \
+  --max-model-len 8000 --max-num-seqs 1 \
+  --gpu-memory-utilization 0.85 --max-num-batched-tokens 8192 \
+  --kv-cache-dtype float16 --host 0.0.0.0 --port 8000
+```
+
+Use `/v1/chat/completions` with the chat template; the served model id is `dg-awq`.
+
+## In this repo
+
+- `index.html` — the live showcase (self-contained, no build step).
+- `newbench/`, `REPORT.md` — measurement harnesses and data.
