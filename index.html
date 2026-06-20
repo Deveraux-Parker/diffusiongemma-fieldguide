@@ -136,7 +136,7 @@ footer code{font-family:var(--mono);color:var(--ink);background:#EFF2EE;padding:
   <h2>It writes, computes, and calls tools.</h2></div>
   <p class="sub">The same model that reads your context cleanly also generates it. Long outputs stay coherent and non-repetitive, multilingual is natural, and tool calls come back as valid JSON.</p>
   <div class="grid3">
-    <div class="feat"><div class="tag">long outputs</div><h3>Coherent at length</h3><p>Forced 1,500-token generations stayed fully consistent — no repetition collapse. Latency rises in clean steps, one 256-token canvas at a time.</p><div class="metric">uniq-8gram 1.00</div></div>
+    <div class="feat"><div class="tag">long outputs</div><h3>Coherent at length</h3><p>An 800-token technical explainer came back fully coherent and non-repetitive in 2.6 s. It denoises 256-token canvases, so throughput <i>rises</i> with output length.</p><div class="metric">800 tok @ 305 tok/s</div></div>
     <div class="feat"><div class="tag">tool use</div><h3>Clean tool calls</h3><p>Single and parallel tool calls and full round-trips all produced valid JSON with the right finish reason.</p><div class="metric">valid · parallel ✓</div></div>
     <div class="feat"><div class="tag">multilingual</div><h3>Natural in many languages</h3><p>Japanese, Chinese, and French generations are fluent and idiomatic.</p><div class="metric">JA · ZH · FR ✓</div></div>
   </div>
@@ -156,35 +156,41 @@ footer code{font-family:var(--mono);color:var(--ink);background:#EFF2EE;padding:
 <!-- 4 RUN IT -->
 <section id="run">
   <div class="sh"><span class="eyebrow">Run it</span>
-  <h2>Up in one command.</h2></div>
+  <h2>To 18k context on one 4090.</h2></div>
+  <p class="sub">Two ready configs. Both set <span class="mono">--max-num-batched-tokens ≥ --max-model-len</span> (single-pass prefill, clean retrieval). fp8 KV gives you more context <i>and</i> faster decode.</p>
   <div class="grid2">
     <div>
-      <h3 style="font-size:17px;margin-bottom:10px;font-weight:600">Serve it</h3>
-      <pre class="codeblock" style="font-size:12.5px">docker run -d --gpus all --ipc=host \
-  -v <span class="flag">$MODEL_DIR</span>:/model:ro -p 8001:8000 \
-  vllm/vllm-openai:gemma \
-  --model /model --served-model-name dg-awq \
-  --max-model-len 8000 --max-num-seqs 1 \
-  --gpu-memory-utilization 0.85 \
-  --max-num-batched-tokens 8192 \
-  --kv-cache-dtype float16 \
-  --host 0.0.0.0 --port 8000</pre>
+      <h3 style="font-size:16px;margin-bottom:9px;font-weight:600">Comfortable — 10k / fp16</h3>
+      <pre class="codeblock" style="font-size:12px">vllm serve … --served-model-name dg-awq \
+  --max-model-len 10000 --max-num-seqs 1 \
+  --gpu-memory-utilization 0.88 \
+  <span class="g">--max-num-batched-tokens 10240</span> \
+  --kv-cache-dtype float16</pre>
     </div>
     <div>
-      <h3 style="font-size:17px;margin-bottom:10px;font-weight:600">Call it</h3>
-      <pre class="codeblock" style="font-size:12.5px">curl localhost:8001/v1/chat/completions -d '{
-  "model": "dg-awq",
-  "messages": [{"role":"user","content":
-    "<span class="flag">...7,000 tokens of logs...</span>
-     One line is a RECORD with a code.
-     State that code in one short sentence."}],
-  "temperature": 0, "max_tokens": 60 }'
-
-<span class="c"># → "The code on the RECORD line is</span>
-<span class="c">#    CYAN-4821."  ✓</span></pre>
+      <h3 style="font-size:16px;margin-bottom:9px;font-weight:600">Max context — 18k / fp8</h3>
+      <pre class="codeblock" style="font-size:12px">vllm serve … --served-model-name dg-awq \
+  --max-model-len 18000 --max-num-seqs 1 \
+  --gpu-memory-utilization 0.90 \
+  <span class="g">--max-num-batched-tokens 18432</span> \
+  <span class="flag">--kv-cache-dtype fp8</span></pre>
     </div>
   </div>
-  <div class="callout"><b>Use <span class="mono">/v1/chat/completions</span></b> with the chat template; the served model id is <span class="mono">dg-awq</span>. Put your context in however you like — the model reads all of it.</div>
+  <div class="grid2" style="margin-top:18px">
+    <div>
+      <h3 style="font-size:16px;margin-bottom:9px;font-weight:600">Call it</h3>
+      <pre class="codeblock" style="font-size:12px">curl localhost:8001/v1/chat/completions -d '{
+  "model": "dg-awq",
+  "messages": [{"role":"user","content":
+    "<span class="flag">...thousands of tokens of context...</span>
+     One line is a RECORD with a code.
+     State that code in one short sentence."}],
+  "temperature": 0, "max_tokens": 60 }'</pre>
+    </div>
+    <div style="display:flex;flex-direction:column;justify-content:center">
+      <div class="callout" style="margin:0"><b>fp8 isn't a tax — it's a win.</b> Half-size KV means decode is <b>faster or equal, never slower</b> than fp16 (it's bandwidth-bound — ~595→818 tok/s at 2k context), with no measurable retrieval-quality loss. Use it whenever you want more context or more speed.</div>
+    </div>
+  </div>
 </section>
 
 </main>
